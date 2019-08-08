@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, TextInput, View, Button, TouchableOpacity  } from 'react-native'
+import { StyleSheet, Text, TextInput, View, TouchableOpacity  } from 'react-native'
 import firebase from 'react-native-firebase';
 import styles from './style'
+import {Button} from 'native-base'
 
 export default class signUp extends Component {
   state = { email: '', password: '', errorMessage: null }
@@ -36,7 +37,11 @@ render() {
           onChangeText= {password => this.setState({ password })}
           value={this.state.password}
         />
-        <Button title="Sign Up" color="#e93766" onPress={this.handleSignUp}/>
+        {/* <Button 
+        title="Sign Up" color="#e93766" onPress={this.handleSignUp}/> */}
+          <Button style={{backgroundColor:"#e93766",margin:30}} block onPress ={this.handleSignUp} >
+              <Text style={{color:'white'}}>SignUp</Text>
+          </Button>
         <View>
         <Text> Already have an account? <Text onPress={() => this.props.navigation.navigate('Login')} style={{color:'#e93766', fontSize: 18}}> Login </Text></Text>
         </View>

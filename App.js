@@ -4,6 +4,7 @@ import SignUp from './src/screens/SignUp.js';
 import Home from './src/screens/Home';
 import Loading from './src/screens/Loading'
 import Login from './src/screens/Login'
+import Main from './src/screens/Main'
 
 
 
@@ -13,7 +14,7 @@ const AppNavigator = createStackNavigator(
     Loading,
     SignUp,
     Login,
-    Home
+    Main
 	},
 	{
 		initialRouteName: 'Loading'
