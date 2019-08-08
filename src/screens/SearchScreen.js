@@ -65,15 +65,15 @@ render() {
                 value={this.state.search}
             />
         
-           <UsersCard fbrequest={this.FBfriendRequest}
+           <UsersCard 
             navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-            <UsersCard fbrequest={this.FBfriendRequest}
+            <UsersCard
             navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-            <UsersCard fbrequest={this.FBfriendRequest}
+            <UsersCard 
             navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-            <UsersCard fbrequest={this.FBfriendRequest}
+            <UsersCard 
             navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-            <UsersCard fbrequest={this.FBfriendRequest}
+            <UsersCard 
             navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
         
         </Content>

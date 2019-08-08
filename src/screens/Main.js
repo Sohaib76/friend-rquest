@@ -4,7 +4,7 @@ import { createDrawerNavigator ,createStackNavigator, createAppContainer , Drawe
 import Home from './Home.js'
 import {StatusBar,View} from 'react-native';
 import SearchScreen from './SearchScreen.js';
-// import ProfileOtherUsers from './ProfileOtherUsers.js'
+import ProfileOtherUsers from './ProfileOtherUsers.js'
 
 export default class Main extends Component {
 
@@ -38,9 +38,9 @@ export default class Main extends Component {
       SearchScreen: {
           screen:SearchScreen
       },
-    //   ProfileOtherUsers: {
-    //       screen: ProfileOtherUsers
-    //   }
+      ProfileOtherUsers: {
+          screen: ProfileOtherUsers
+      }
   
     }, 
     

@@ -27,10 +27,15 @@ render() {
                 </Body>
               </Left>
                 
-                
+                <Right>
+                  <Button dark rounded onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers")}}>
+                    <Icon name='md-arrow-dropright' />
+                  </Button>
+                 
+                </Right>
              
             </CardItem>
-            <CardItem footer>
+            {/* <CardItem footer>
              <Right/>
                 <Button rounded onPress={this.props.fbrequest}>
                     <Icon name='logo-facebook' />
@@ -48,7 +53,7 @@ render() {
                   <Left/>
               
                   
-            </CardItem>
+            </CardItem> */}
             
            </Card>
           // </TouchableOpacity>
