@@ -1,8 +1,10 @@
 import React from 'react';
-import { StyleSheet, Platform, Image, View } from 'react-native';
+import { StyleSheet, Platform,  View ,Image} from 'react-native';
 import {Subtitle,Thumbnail,Button,Text,Card,CardItem,Container, Badge, Header, Title, Content, Footer, FooterTab,  Left, Right, Body, Icon, } from 'native-base';
 import firebase from 'react-native-firebase'
 import AntDesign from 'react-native-vector-icons';
+import ImagePicker from 'react-native-image-picker';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
@@ -10,7 +12,7 @@ import AntDesign from 'react-native-vector-icons';
 
 export default class Home extends React.Component {
   state = { userName:'Herina Longbottom' , address: '124 NewBolston' ,contact:'+363467444',
-  email: '', password: '', errorMessage: null }
+  email: '', password: '', errorMessage: null, photo: 'https://images.mentalfloss.com/sites/default/files/styles/insert_main_wide_image/public/5kh3kjh36.png', }
 
 
 
@@ -19,6 +21,17 @@ componentDidMount() {
     const { currentUser } = firebase.auth()
     this.setState({ currentUser })
 }
+
+handleChoosePhoto = () => {
+  const options = {
+    noData: true,
+  };
+  ImagePicker.launchImageLibrary(options, response => {
+    if (response.uri) {
+      this.setState({ photo: response });
+    }
+  });
+};
 
 handleLogout = () => {
   firebase
@@ -29,6 +42,7 @@ handleLogout = () => {
 }
   static navigationOptions = { header: null };
 render() {
+    const { photo } = this.state;
     const { currentUser } = this.state
     
   return (
@@ -68,9 +82,19 @@ render() {
                 <Left/>
                  <Left/>
                   <Left/>
+                  {photo && (
                
-                <Thumbnail style={{marginTop:10}}
-                source={{uri: 'https://images.mentalfloss.com/sites/default/files/styles/insert_main_wide_image/public/5kh3kjh36.png'}} />
+               <Button onPress={this.handleChoosePhoto} rounded
+                    style={{margin:30, backgroundColor:'white'}}
+               >
+                 
+                  <Thumbnail style={{marginTop:10}} large
+                    source={{uri: photo}} />
+                    {/* <Badge  style={{padding:0,  width:30,height:30, backgroundColor:'white',borderRadius:20, position: 'absolute', right:-2,bottom:-18}}>
+                      <Icon style={{margin:0}} type="MaterialCommunityIcons" name='pencil-circle' />
+                    </Badge> */}
+               </Button>
+                  )}
    
                 </Right>
                
