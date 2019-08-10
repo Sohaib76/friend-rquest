@@ -4,15 +4,37 @@ import firebase from 'react-native-firebase';
 import styles from './style'
 import {Button} from 'native-base'
 
+
+var config = {
+    databaseURL: "https://friendrequest-a67aa.firebaseio.com/",
+    projectId: "friendrequest-a67aa",
+};
+
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(config);
+}
+
 export default class signUp extends Component {
-  state = { email: '', password: '', errorMessage: null }
-  handleSignUp = () => {
+  constructor(props){
+    super(props);
+    this.state = { email: '', password: '', errorMessage: null, }
+  }
+  
+  handleSignUp () {
     firebase
+    
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => this.props.navigation.navigate('Home'))
       .catch(error => this.setState({ errorMessage: error.message }))
+      
+    
+    
   }
+
+   
+  
 
 render() {
     return (
@@ -22,6 +44,7 @@ render() {
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}
           </Text>}
+        
         <TextInput
           placeholder="Email"
           autoCapitalize="none"
@@ -39,7 +62,7 @@ render() {
         />
         {/* <Button 
         title="Sign Up" color="#e93766" onPress={this.handleSignUp}/> */}
-          <Button style={{backgroundColor:"#e93766",margin:30}} block onPress ={this.handleSignUp} >
+          <Button style={{backgroundColor:"#e93766",margin:30}} block onPress ={this.handleSignUp.bind(this,this.state.email)} >
               <Text style={{color:'white'}}>SignUp</Text>
           </Button>
         <View>

@@ -11,7 +11,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default class Home extends React.Component {
-  state = { userName:'Herina Longbottom' , address: '124 NewBolston' ,contact:'+363467444',
+  state = { userName:'Longbottom' , address: '124 NewBolston' ,contact:'+363467444',
   email: '', password: '', errorMessage: null, photo: 'https://images.mentalfloss.com/sites/default/files/styles/insert_main_wide_image/public/5kh3kjh36.png', }
 
 
@@ -20,7 +20,23 @@ export default class Home extends React.Component {
 componentDidMount() {
     const { currentUser } = firebase.auth()
     this.setState({ currentUser })
+    firebase.auth().onAuthStateChanged(user => {
+      if(user) {
+        this.writeUserData(user.uid, user.email, this.state.userName);
+      }
+    })
 }
+
+
+ writeUserData(userId, email, userName) {
+    firebase.database().ref('users/' + userId + '/').set({
+        info: {
+          userName: userName,
+          email: email,
+        },
+      
+    });
+    }
 
 handleChoosePhoto = () => {
   const options = {

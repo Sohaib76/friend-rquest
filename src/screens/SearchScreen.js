@@ -10,21 +10,98 @@ import { SearchBar } from 'react-native-elements';
 
 
 
+
 export default class SearchScreen extends React.Component {
-  state = { email: '', password: '', errorMessage: null,search: '', }
+  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , userName:'User '}
 
 
 
  updateSearch = search => {
     this.setState({ search });
   };
-  
 
+  componentDidMount() {
+
+        firebase.auth().onAuthStateChanged(user => {
+            if(user) {
+                this.readUserData(user.uid, user.email, this.state.userName);
+            }
+        })
+        
+   
+}
+
+ readUserData(userId, email, userName) {
+    firebase.database().ref('users/').once('value', function(snapshot) {
+        let data = snapshot.val();
+        for(let i in data) {
+            this.state.tempData.push(data[i]);
+        }
+        this.setState({tempData: this.state.tempData,});
+            
+    }.bind(this));
+}
+    
+
+  
 
   static navigationOptions = { header: null };
 render() {
-    const { currentUser } = this.state
+    const { currentUser } = firebase.auth()
     const navigation = this.props.navigation;
+
+    
+
+   
+    
+
+      
+      /** Comments for help in firebase*/
+
+    // const userId = this.state.tempData
+    // alert(JSON.stringify(userId))
+
+    //     user.providerData.forEach(function (profile) {
+    //     alert("Sign-in provider: " + profile.providerId);
+    //     alert("  Provider-specific UID: " + profile.uid);
+    //     alert("  Name: " + profile.displayName);
+    //     alert("  Email: " + profile.email);
+    //     alert("  Photo URL: " + profile.photoURL);
+    //   });
+
+
+    /**  Comments for retreiving specific User data */
+    // firebase.database().ref('users/' + userId + '/').once('value', function(snapshot) {
+    //     let data = snapshot.val();
+    //     for(let i in data) {
+    //         this.state.tempData.push(data[i]);
+    //     }
+    //     this.setState({tempData: this.state.tempData, email: email, userName: userName});
+            
+    // }.bind(this));
+
+    //  const usersList = Object.keys(this.state.tempData).map((d, key) => {
+    //        return  <Text key={key}> {this.state.tempData[d].email} </Text>
+    // })
+   
+
+
+
+
+    
+
+    
+    const usersList = Object.keys(this.state.tempData).map((d, key) => {
+           return  <UsersCard key={key} userName={this.state.tempData[d].info.userName} userEmail={this.state.tempData[d].info.email}
+            navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
+    })
+
+    
+
+
+  
+
+
 
     FBfriendRequest = () => {
         alert("Your Friend Request Has Been Sent")
@@ -64,18 +141,12 @@ render() {
                 onChangeText={this.updateSearch}
                 value={this.state.search}
             />
+
+            
+            
+            {usersList}
         
-           <UsersCard 
-            navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-            <UsersCard
-            navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-            <UsersCard 
-            navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-            <UsersCard 
-            navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-            <UsersCard 
-            navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-        
+
         </Content>
     </Container>
     )
