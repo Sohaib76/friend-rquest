@@ -12,12 +12,21 @@ import { SearchBar } from 'react-native-elements';
 
 
 export default class SearchScreen extends React.Component {
-  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , userName:'User '}
+  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , filteredData: [], userName:'User '}
 
 
 
  updateSearch = search => {
-    this.setState({ search });
+     let text = search.toLowerCase();
+     let usersInfo = this.state.tempData
+     let filteredData = usersInfo.filter(item =>{
+         if(item.info.userName.toLowerCase().match(text)){
+             return item
+         }
+     } )
+
+    this.setState({ filteredData : filteredData ,search });
+    // alert(this.state.filteredData)
   };
 
   componentDidMount() {
@@ -28,6 +37,10 @@ export default class SearchScreen extends React.Component {
             }
         })
         
+        // x = this.state.tempData.filter(item => {
+        //     return item.info.userName=='Longbottom'
+        // })
+        // alert(JSON.stringify(x))
    
 }
 
@@ -42,6 +55,8 @@ export default class SearchScreen extends React.Component {
     }.bind(this));
 }
     
+
+ 
 
   
 
@@ -88,11 +103,26 @@ render() {
 
 
 
+
+
+
+    // const filteredUsers = Object.keys(this.state.tempData).filter(item => {     
+
+    //     const itemData = `${item.info.email.toUpperCase()} `
+            
+    //     const textData = text.toUpperCase();
+            
+    //     return itemData.indexOf(textData) > -1;    
+    // });
+    // this.setState({ data: filteredUsers });  
+    // console.log(this.state.data)
+
+
     
 
     
-    const usersList = Object.keys(this.state.tempData).map((d, key) => {
-           return  <UsersCard key={key} userName={this.state.tempData[d].info.userName} userEmail={this.state.tempData[d].info.email}
+    const usersList = Object.keys(this.state.filteredData).map((d, key) => {
+           return  <UsersCard key={key} userName={this.state.filteredData[d].info.userName} userEmail={this.state.filteredData[d].info.email}
             navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
     })
 
@@ -142,6 +172,7 @@ render() {
                 value={this.state.search}
             />
 
+           
             
             
             {usersList}
