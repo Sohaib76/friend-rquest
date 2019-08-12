@@ -11,18 +11,25 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default class Home extends React.Component {
-  state = { userName:'Longbottom' , address: '124 NewBolston' ,contact:'+363467444',
+  state = { userName:'User 101' , address: '124 NewBolston' ,contact:'+363467444',
   email: '', password: '', errorMessage: null, photo: 'https://images.mentalfloss.com/sites/default/files/styles/insert_main_wide_image/public/5kh3kjh36.png', }
 
 
 
 
-componentDidMount() {
-    const { currentUser } = firebase.auth()
-    this.setState({ currentUser })
+componentWillMount () {
+  const { currentUser } = firebase.auth()
+  var email = currentUser.email;
+  var emailSplitted = email.substr(0, email.indexOf('@'));
+  var emailSplittedCapt = emailSplitted.charAt(0).toUpperCase() + emailSplitted.slice(1)
+  
+ 
+    this.setState({ currentUser ,userName:emailSplittedCapt})
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
-        this.writeUserData(user.uid, user.email, this.state.userName);
+        this.writeUserData(user.uid, user.email, emailSplittedCapt);
+        // this.readUserData(user.uid);
+        
       }
     })
 }
@@ -33,10 +40,24 @@ componentDidMount() {
         info: {
           userName: userName,
           email: email,
+         
         },
       
     });
     }
+
+
+    // readUserData(userId) {
+    //   firebase.database().ref('users/' + userId + '/').once('value', function(snapshot) {
+    //       let data = snapshot.val();
+    //       let photoUrl = data.photoUrl
+    //       this.setState({photo: photoUrl});
+    //       alert(photoUrl)
+    //     }.bind(this));
+    // }
+
+
+
 
 handleChoosePhoto = () => {
   const options = {
@@ -44,9 +65,27 @@ handleChoosePhoto = () => {
   };
   ImagePicker.launchImageLibrary(options, response => {
     if (response.uri) {
-      this.setState({ photo: response });
+      this.setState({ photo: response.uri });
     }
-  });
+
+  //   firebase.auth().onAuthStateChanged(user => {
+  //     firebase.database().ref('users/' + user.uid + '/').update({
+  //       info: {
+  //         userName: this.state.userName,
+  //         email : user.email,
+  //         photoUrl : response.uri,
+          
+  //       },
+  //   })
+
+  // });
+
+
+ 
+  
+  
+});
+  
 };
 
 handleLogout = () => {

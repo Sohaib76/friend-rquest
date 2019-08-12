@@ -106,25 +106,23 @@ render() {
 
 
 
-    // const filteredUsers = Object.keys(this.state.tempData).filter(item => {     
-
-    //     const itemData = `${item.info.email.toUpperCase()} `
-            
-    //     const textData = text.toUpperCase();
-            
-    //     return itemData.indexOf(textData) > -1;    
-    // });
-    // this.setState({ data: filteredUsers });  
-    // console.log(this.state.data)
 
 
     
-
     
-    const usersList = Object.keys(this.state.filteredData).map((d, key) => {
-           return  <UsersCard key={key} userName={this.state.filteredData[d].info.userName} userEmail={this.state.filteredData[d].info.email}
-            navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
-    })
+        const usersListAll = Object.keys(this.state.tempData).map((d, key) => {
+                    return <UsersCard key={key} userName={this.state.tempData[d].info.userName} userEmail={this.state.tempData[d].info.email}
+                    navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
+             })
+   
+  
+
+        const usersList = Object.keys(this.state.filteredData).map((d, key) => {
+            return  <UsersCard key={key} userName={this.state.filteredData[d].info.userName} userEmail={this.state.filteredData[d].info.email}
+             navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
+     })
+    
+    
 
     
 
@@ -165,6 +163,7 @@ render() {
     
         </Header>
         <Content>
+            
             <SearchBar
                 containerStyle = {{backgroundColor:'white'}}
                 placeholder="Type a User Name..."
@@ -174,7 +173,7 @@ render() {
 
            
             
-            
+            {this.state.filteredData == 0 && usersListAll}
             {usersList}
         
 

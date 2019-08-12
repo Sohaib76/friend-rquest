@@ -14,6 +14,12 @@ export default class ProfileOtherUsers extends React.Component {
 
 
   static navigationOptions = { header: null };
+
+componentDidMount(){
+    var user = this.props.navigation.getParam('username')
+    this.setState({userName: user})
+}
+
 render() {
 
     
@@ -45,9 +51,9 @@ render() {
                   <Left/> */}
                 <CardItem cardBody>
                     <Image source={{uri: 'https://cdn.pixabay.com/photo/2017/03/14/17/43/mountain-2143877_960_720.jpg'}} style={{height: 200, width: null, flex: 1}}/>
-                     <Text style={{position:'absolute',color:'white',bottom:-40,left:140,right:0,top:150
+                     <Text style={{position:'absolute',color:'white',bottom:-40,left:160,right:0,top:150
                         ,fontSize:25,textShadowOffset:{width:1,height:2},textShadowColor:'black'
-                        ,textShadowRadius:3}}>User Name</Text>
+                        ,textShadowRadius:3}}>{this.state.userName}</Text>
                      <Thumbnail style={{
                         position:'absolute',bottom:-50,left:150,right:0,top:50,
                     

@@ -28,7 +28,7 @@ render() {
               </Left>
                 
                 <Right>
-                  <Button dark rounded onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers")}}>
+                  <Button dark rounded onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers", {username:this.props.userName} )}}>
                     <Icon name='md-arrow-dropright' />
                   </Button>
                  
