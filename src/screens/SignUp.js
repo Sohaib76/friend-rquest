@@ -3,6 +3,7 @@ import { StyleSheet, Text, TextInput, View, TouchableOpacity  } from 'react-nati
 import firebase from 'react-native-firebase';
 import styles from './style'
 import {Button} from 'native-base'
+import { LoginButton, AccessToken } from 'react-native-fbsdk';
 
 
 var config = {
@@ -65,6 +66,23 @@ render() {
           <Button style={{backgroundColor:"#e93766",margin:30}} block onPress ={this.handleSignUp.bind(this,this.state.email)} >
               <Text style={{color:'white'}}>SignUp</Text>
           </Button>
+           <LoginButton
+          onLoginFinished={
+            (error, result) => {
+              if (error) {
+                console.log("login has error: " + result.error);
+              } else if (result.isCancelled) {
+                console.log("login is cancelled.");
+              } else {
+                AccessToken.getCurrentAccessToken().then(
+                  (data) => {
+                    console.log(data.accessToken.toString())
+                  }
+                )
+              }
+            }
+          }
+          onLogoutFinished={() => console.log("logout.")}/>
         <View>
         <Text> Already have an account? <Text onPress={() => this.props.navigation.navigate('Login')} style={{color:'#e93766', fontSize: 18}}> Login </Text></Text>
         </View>
