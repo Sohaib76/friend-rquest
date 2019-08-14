@@ -29,7 +29,7 @@ render() {
               </Left>
                 
                 <Right>
-                  <Button dark rounded onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers", {username:this.props.userName, userPhoto:this.props.userPhoto} )}}>
+                  <Button dark rounded onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers", {username:this.props.userName, userPhoto:this.props.userPhoto, fbuserId:this.props.fbuserId} )}}>
                     <Icon name='md-arrow-dropright' />
                   </Button>
                  

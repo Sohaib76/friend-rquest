@@ -127,7 +127,7 @@ render() {
     
         const usersListAll = Object.keys(this.state.tempData).map((d, key) => {
                     return <UsersCard key={key} userName={this.state.tempData[d].info.userName} userEmail={this.state.tempData[d].info.email}
-                    userPhoto = {this.state.tempData[d].info.photoUrl}
+                    userPhoto = {this.state.tempData[d].info.photoUrl}  fbuserId={this.state.tempData[d].info.fbuserId}
                     navigation={navigation} otherUserProfile={'ProfileOtherUsers'}
                     
                     />
@@ -137,7 +137,7 @@ render() {
 
         const usersList = Object.keys(this.state.filteredData).map((d, key) => {
             return  <UsersCard key={key} userName={this.state.filteredData[d].info.userName} userEmail={this.state.filteredData[d].info.email}
-            userPhoto = {this.state.filteredData[d].info.photoUrl}
+            userPhoto = {this.state.filteredData[d].info.photoUrl} fbuserId={this.state.filteredData[d].info.fbuserId}
              navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
      })
     

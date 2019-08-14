@@ -5,7 +5,8 @@ import firebase from 'react-native-firebase'
 import AntDesign from 'react-native-vector-icons';
 import ImagePicker from 'react-native-image-picker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { AccessToken, LoginManager ,GraphRequest,
+  GraphRequestManager,} from 'react-native-fbsdk';
 
 
 
@@ -21,7 +22,7 @@ export default class Home extends React.Component {
 
   facebookLogin = async()=> {
     try {
-      const result = await LoginManager.logInWithPermissions(['public_profile', 'email', 'id']);
+      const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
   
       if (result.isCancelled) {
         // handle this however suites the flow of your app
@@ -31,7 +32,18 @@ export default class Home extends React.Component {
       console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
   
       // get the access token
-      const data = await AccessToken.getCurrentAccessToken();
+      const data = await AccessToken.getCurrentAccessToken() 
+      // .then(data => {
+      //   alert(data.accessToken.toString());
+    
+      //   const processRequest = new GraphRequest(
+      //     '/me?fields=id,first_name,last_name,name,picture.type(large),email,gender',
+      //     null,
+      //     this.get_Response_Info
+      //   );
+      //   // Start the graph request.
+      //   new GraphRequestManager().addRequest(processRequest).start();
+      // });;
   
       if (!data) {
         // handle this however suites the flow of your app
@@ -40,6 +52,7 @@ export default class Home extends React.Component {
   
       // create a new firebase credential with the token
       const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+      // this.setState({fbtoken : data.accessToken})
   
       // login with credential
       const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
@@ -50,28 +63,54 @@ export default class Home extends React.Component {
     }
     firebase.auth().onAuthStateChanged(user => {
     if(user) {
-      this.updateUserData(user.uid, user.email, user.displayName,user.photoURL);
+     
+      this.updateUserData(user.providerData[0].uid, user.email, user.displayName,user.photoURL);
       this.setState({photo: user.photoURL, userEmail: user.email, userName:user.displayName})
-      
-    }
+  }
   })
   }
+  
 
-  updateUserData(fbuserId,fbuserEmail,fbuserName,fbphtotUrl){
-    firebase.database().ref('users/' + this.state.olduserId + '/').update({
+
+
+  get_Response_Info = (error, result) => {
+    if (error) {
+      Alert.alert('Error fetching data: ' + error.toString());
+    } else {
+      //response alert
+      alert(JSON.stringify(result));      
+      this.setState({ fbtoken: result.id });
       
-        info: {
+    }
+  
+  
+}
+
+
+
+
+
+
+
+  updateUserData(fbuserId,fbuserEmail,fbuserName,fbphototUrl){
+    firebase.database().ref('users/' + this.state.olduserId + '/' + 'info').update({
+      
+        
           userName: fbuserName,
           email: fbuserEmail,
-          photoUrl: fbphtotUrl,
+          photoUrl: fbphototUrl,
           fbuserId: fbuserId
          
-        },
+     
     
      
     
   });
   }
+
+
+
+
 
 
 
@@ -118,7 +157,8 @@ componentDidMount(){
           userName: userName,
           email: email,
           photoUrl: photoUrl,
-          userId : userId
+          userId : userId,
+          fbuserId : '0'
          
         },
       
@@ -176,6 +216,7 @@ handleLogout = () => {
     .signOut()
     .then(() => this.props.navigation.navigate('SignUp'))
     .catch(error => this.setState({ errorMessage: error.message }))
+  LoginManager.logOut()
 }
   static navigationOptions = { header: null };
 render() {

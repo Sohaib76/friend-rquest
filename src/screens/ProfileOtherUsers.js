@@ -1,25 +1,142 @@
 import React from 'react';
 import { StyleSheet, Platform, Image, View } from 'react-native';
 import {Tabs,Tab,TabHeading, Segment,Thumbnail,Button,Text,Card,CardItem,Container, Badge, Header, Title, Content, Footer, FooterTab,  Left, Right, Body, Icon, } from 'native-base';
+import { ShareDialog ,GameRequestDialog,MessageDialog  } from 'react-native-fbsdk';
 
 
 
+// Build up a shareable link.
+// const shareLinkContent = {
+//     contentType: 'link',
+//     contentUrl: "https://facebook.com",
+//     contentDescription: 'Wow, check out this great site!',
+//   };
 
 
 
 export default class ProfileOtherUsers extends React.Component {
-  state = { userName:'Herina Longbottom' , address: '124 NewBolston' ,contact:'+363467444',email:'pol2s@edc.com',
+    constructor(props) {
+        super(props);
+        const shareLinkContent = {
+          contentType: 'link',
+          contentUrl: 'https://www.facebook.com/',
+          contentDescription: 'Facebook sharing is easy!',
+          commonParameters : {
+            peopleIds: ['102513651113996']
+        }
+        };
+        // const gameRequestContent = {
+        //     recipients: ['102513651113996'],
+        //     title: 'Accept My Friend Request',
+        //     message: 'Plz Accept M Request'
+        //   };
+          const messageDialog = {
+            contentType: 'link',
+            contentUrl: 'https://www.facebook.com/',
+            commonParameters : {
+                peopleIds: ['102513651113996']
+            }
+            
+           
+          };
+    
+        
+        this.state = { userName:'Herina Longbottom' , address: '124 NewBolston' ,contact:'+363467444',email:'pol2s@edc.com',
       
-      password: '', errorMessage: null }
+      password: '', errorMessage: null , shareLinkContent: shareLinkContent, messageDialog:messageDialog
+      
+        }
+     
+    }
 
 
   static navigationOptions = { header: null };
 
-componentDidMount(){
+componentWillMount(){
     var user = this.props.navigation.getParam('username')
     var userPhoto = this.props.navigation.getParam('userPhoto')
-    this.setState({userName: user , userPhoto: userPhoto})
+    var fbuserId = this.props.navigation.getParam('fbuserId')
+    this.setState({userName: user , userPhoto: userPhoto , fbuserId: fbuserId})
 }
+
+
+// sendFriendRequest = ()=>{
+//     FB.ui({method: 'apprequests',
+//         message: 'Accept My Friend Request',
+//         to: this.state.fbuserId
+//         }, function(response){
+//         console.log(response);
+//    });
+// }
+
+
+
+
+// Share the link using the share dialog.
+shareLinkWithShareDialog() {
+    var tmp = this;
+    ShareDialog.canShow(this.state.shareLinkContent).then(
+      function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(tmp.state.shareLinkContent);
+        }
+      }
+    ).then(
+      function(result) {
+        if (result.isCancelled) {
+          alert('Share cancelled');
+        } else {
+          alert('Share success with postId: ' + result.postId);
+        }
+      },
+      function(error) {
+        alert('Share fail with error: ' + error);
+      }
+    );
+  }
+
+
+  messageDialogFunction (){
+    var tmp = this;
+    MessageDialog.canShow(this.state.messageDialog).then(
+      function(canShow) {
+        if (canShow) {
+          return MessageDialog.show(tmp.state.messageDialog);
+        }
+      }
+    ).then(
+      function(result) {
+        if (result.isCancelled) {
+          alert('Request cancelled');
+        } else {
+          alert('Request success with postId: ' + result.postId);
+        }
+      },
+      function(error) {
+        alert('Request fail with error: ' + error);
+      }
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 render() {
 
@@ -79,7 +196,7 @@ render() {
                 
                 <CardItem>
                 <Right/>
-                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={() => this.props.navigation.navigate("WebViewFB")}>
+                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={this.shareLinkWithShareDialog.bind(this)}>
                     <Left/>
                     <Icon  style={{ marginLeft: 30, marginRight: 0,}} name='logo-facebook' />
                     <Right/>
