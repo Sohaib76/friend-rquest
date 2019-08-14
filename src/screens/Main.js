@@ -5,6 +5,7 @@ import Home from './Home.js'
 import {StatusBar,View} from 'react-native';
 import SearchScreen from './SearchScreen.js';
 import ProfileOtherUsers from './ProfileOtherUsers.js'
+import WebViewFB from './WebViewFB';
 
 export default class Main extends Component {
 
@@ -40,6 +41,9 @@ export default class Main extends Component {
       },
       ProfileOtherUsers: {
           screen: ProfileOtherUsers
+      },
+      WebViewFB: {
+        screen : WebViewFB
       }
   
     }, 

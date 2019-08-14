@@ -17,7 +17,8 @@ export default class ProfileOtherUsers extends React.Component {
 
 componentDidMount(){
     var user = this.props.navigation.getParam('username')
-    this.setState({userName: user})
+    var userPhoto = this.props.navigation.getParam('userPhoto')
+    this.setState({userName: user , userPhoto: userPhoto})
 }
 
 render() {
@@ -51,7 +52,8 @@ render() {
                   <Left/> */}
                 <CardItem cardBody>
                     <Image source={{uri: 'https://cdn.pixabay.com/photo/2017/03/14/17/43/mountain-2143877_960_720.jpg'}} style={{height: 200, width: null, flex: 1}}/>
-                     <Text style={{position:'absolute',color:'white',bottom:-40,left:160,right:0,top:150
+                    {/* 'https://cdn.pixabay.com/photo/2017/03/14/17/43/mountain-2143877_960_720.jpg' */}
+                     <Text style={{position:'absolute',color:'white',bottom:-40,left:155,right:0,top:150
                         ,fontSize:25,textShadowOffset:{width:1,height:2},textShadowColor:'black'
                         ,textShadowRadius:3}}>{this.state.userName}</Text>
                      <Thumbnail style={{
@@ -60,7 +62,8 @@ render() {
                         marginTop:10,
                     
                     }} large
-                    source={{uri: 'http://2ap93t1x1l6e2f6gfo3ag4vw.wpengine.netdna-cdn.com/wp-content/uploads/2017/03/harry-768x576.jpg'}} />
+                    source={{uri: this.state.userPhoto}} />
+                    {/* 'http://2ap93t1x1l6e2f6gfo3ag4vw.wpengine.netdna-cdn.com/wp-content/uploads/2017/03/harry-768x576.jpg' */}
                 </CardItem>
 
                 
@@ -76,7 +79,7 @@ render() {
                 
                 <CardItem>
                 <Right/>
-                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded>
+                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={() => this.props.navigation.navigate("WebViewFB")}>
                     <Left/>
                     <Icon  style={{ marginLeft: 30, marginRight: 0,}} name='logo-facebook' />
                     <Right/>

@@ -3,7 +3,8 @@ import { StyleSheet, Text, TextInput, View, TouchableOpacity  } from 'react-nati
 import firebase from 'react-native-firebase';
 import styles from './style'
 import {Button} from 'native-base'
-import { LoginButton, AccessToken } from 'react-native-fbsdk';
+import { LoginButton, AccessToken ,GraphRequest,
+  GraphRequestManager,} from 'react-native-fbsdk';
 
 
 var config = {
@@ -29,10 +30,50 @@ export default class signUp extends Component {
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => this.props.navigation.navigate('Home'))
       .catch(error => this.setState({ errorMessage: error.message }))
-      
-    
-    
+         
   }
+
+
+  get_Response_Info = (error, result) => {
+    if (error) {
+      //Alert for the Error
+      Alert.alert('Error fetching data: ' + error.toString());
+    } else {
+      //response alert
+      alert(JSON.stringify(result));
+      this.setState({ fbuser_name: result.name });
+      this.setState({ fbtoken: result.id });
+      this.setState({ fbprofile_pic: result.picture.data.url });
+      this.setState({ fbemail: result.email });
+      
+
+      //third_party_id
+      
+
+      // firebase.auth().onAuthStateChanged(user => {
+      //   if(user) {
+      //     this.writeUserFBData(this.state.fbuser_name,this.state.fbemail,this.state.fbuser_Name,this.state.fbprofile_pic);
+          
+          
+      //   }
+      // })
+
+    }
+    this.props.navigation.navigate('Home')
+  }
+   
+
+
+  // writeUserFBData(fbuserId, fbemail, fbuserName, fbphotoUrl) {
+  //   firebase.database().ref('users/' + fbuserId + '/').set({
+  //       info: {
+  //         fbuserName: fbuserName,
+  //         fbemail: fbemail,
+  //         fbphotoUrl: fbphotoUrl
+  //       },
+      
+  //   });
+  //   }
 
    
   
@@ -66,23 +107,33 @@ render() {
           <Button style={{backgroundColor:"#e93766",margin:30}} block onPress ={this.handleSignUp.bind(this,this.state.email)} >
               <Text style={{color:'white'}}>SignUp</Text>
           </Button>
-           <LoginButton
-          onLoginFinished={
-            (error, result) => {
-              if (error) {
-                console.log("login has error: " + result.error);
-              } else if (result.isCancelled) {
-                console.log("login is cancelled.");
-              } else {
-                AccessToken.getCurrentAccessToken().then(
-                  (data) => {
-                    console.log(data.accessToken.toString())
-                  }
-                )
-              }
-            }
-          }
-          onLogoutFinished={() => console.log("logout.")}/>
+          <Button style={{marginLeft:40,marginRight:40,margin:10,backgroundColor:'#1752ad'}}>
+              <LoginButton 
+              readPermissions={['public_profile']}
+              onLoginFinished={(error, result) => {
+                if (error) {
+                  alert(error);
+                  alert('login has error: ' + result.error);
+                } else if (result.isCancelled) {
+                  alert('login is cancelled.');
+                } else {
+                  AccessToken.getCurrentAccessToken().then(data => {
+                    alert(data.accessToken.toString());
+    
+                    const processRequest = new GraphRequest(
+                      '/me?fields=id,first_name,last_name,name,picture.type(large),email,gender',
+                      null,
+                      this.get_Response_Info
+                    );
+                    // Start the graph request.
+                    new GraphRequestManager().addRequest(processRequest).start();
+                  });
+                }
+              }}
+              onLogoutFinished={this.onLogout}
+            />
+          </Button>
+        
         <View>
         <Text> Already have an account? <Text onPress={() => this.props.navigation.navigate('Login')} style={{color:'#e93766', fontSize: 18}}> Login </Text></Text>
         </View>

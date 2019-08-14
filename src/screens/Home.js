@@ -5,7 +5,7 @@ import firebase from 'react-native-firebase'
 import AntDesign from 'react-native-vector-icons';
 import ImagePicker from 'react-native-image-picker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
 
 
 
@@ -17,7 +17,76 @@ export default class Home extends React.Component {
 
 
 
+
+
+  facebookLogin = async()=> {
+    try {
+      const result = await LoginManager.logInWithPermissions(['public_profile', 'email', 'id']);
+  
+      if (result.isCancelled) {
+        // handle this however suites the flow of your app
+        throw new Error('User cancelled request'); 
+      }
+  
+      console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
+  
+      // get the access token
+      const data = await AccessToken.getCurrentAccessToken();
+  
+      if (!data) {
+        // handle this however suites the flow of your app
+        throw new Error('Something went wrong obtaining the users access token');
+      }
+  
+      // create a new firebase credential with the token
+      const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+  
+      // login with credential
+      const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
+  
+      console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
+    } catch (e) {
+      console.error(e);
+    }
+    firebase.auth().onAuthStateChanged(user => {
+    if(user) {
+      this.updateUserData(user.uid, user.email, user.displayName,user.photoURL);
+      this.setState({photo: user.photoURL, userEmail: user.email, userName:user.displayName})
+      
+    }
+  })
+  }
+
+  updateUserData(fbuserId,fbuserEmail,fbuserName,fbphtotUrl){
+    firebase.database().ref('users/' + this.state.olduserId + '/').update({
+      
+        info: {
+          userName: fbuserName,
+          email: fbuserEmail,
+          photoUrl: fbphtotUrl,
+          fbuserId: fbuserId
+         
+        },
+    
+     
+    
+  });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 componentWillMount () {
+
   const { currentUser } = firebase.auth()
   var email = currentUser.email;
   var emailSplitted = email.substr(0, email.indexOf('@'));
@@ -27,24 +96,37 @@ componentWillMount () {
     this.setState({ currentUser ,userName:emailSplittedCapt})
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
-        this.writeUserData(user.uid, user.email, emailSplittedCapt);
+        this.writeUserData(user.uid, user.email, emailSplittedCapt,this.state.photo);
         // this.readUserData(user.uid);
-        
+        this.setState({ userEmail:user.email, userName : emailSplittedCapt})
       }
     })
+    
+    
 }
 
 
- writeUserData(userId, email, userName) {
+componentDidMount(){
+  const { currentUser } = firebase.auth()
+  this.setState({olduserId : currentUser.uid})
+}
+
+
+ writeUserData(userId, email, userName, photoUrl) {
     firebase.database().ref('users/' + userId + '/').set({
         info: {
           userName: userName,
           email: email,
+          photoUrl: photoUrl,
+          userId : userId
          
         },
       
     });
     }
+    
+
+  
 
 
     // readUserData(userId) {
@@ -116,12 +198,12 @@ render() {
             <Body>
                 <Title>Home</Title>
                <Subtitle> 
-              {currentUser && currentUser.email}!</Subtitle>
+              {currentUser && this.state.userEmail}!</Subtitle>
             </Body>
             <Right>
                 <Button badge transparent active 
                   onPress={()=> {
-                    this.props.navigation.navigate("SearchScreen")
+                    this.props.navigation.navigate("SearchScreen", {olduserId:this.state.olduserId})
                   }}
                 >
                     <Icon name="search" />
@@ -168,11 +250,11 @@ render() {
                 </CardItem>
                 <CardItem/>
                 <CardItem>
-                    <Text>Email    :  {currentUser && currentUser.email}!</Text>
+                    <Text>Email    :  {currentUser && this.state.userEmail}!</Text>
                 </CardItem>
                 
 
-                <Button block style={{marginLeft:40,marginRight:40,margin:10}}> 
+                <Button block style={{marginLeft:40,marginRight:40,margin:10}} onPress={this.facebookLogin}> 
                     <Icon name='logo-facebook' />
                     <Text>Facebook</Text>
                 </Button>

@@ -31,11 +31,19 @@ export default class SearchScreen extends React.Component {
 
   componentDidMount() {
 
+        var olduserId = this.props.navigation.getParam('olduserId')
+       alert(olduserId)
+
+        const currentUserId = firebase.auth().currentUser.uid
+        this.setState({currentUserId : currentUserId , olduserId: olduserId})
+
         firebase.auth().onAuthStateChanged(user => {
             if(user) {
                 this.readUserData(user.uid, user.email, this.state.userName);
             }
         })
+        
+
         
         // x = this.state.tempData.filter(item => {
         //     return item.info.userName=='Longbottom'
@@ -46,11 +54,18 @@ export default class SearchScreen extends React.Component {
 
  readUserData(userId, email, userName) {
     firebase.database().ref('users/').once('value', function(snapshot) {
+        
         let data = snapshot.val();
-        for(let i in data) {
-            this.state.tempData.push(data[i]);
+        
+       
+            for(let i in data) {
+              if(i != this.state.currentUserId && i != this.state.olduserId){
+                   this.state.tempData.push(data[i]);
+                }
         }
         this.setState({tempData: this.state.tempData,});
+     
+        
             
     }.bind(this));
 }
@@ -112,13 +127,17 @@ render() {
     
         const usersListAll = Object.keys(this.state.tempData).map((d, key) => {
                     return <UsersCard key={key} userName={this.state.tempData[d].info.userName} userEmail={this.state.tempData[d].info.email}
-                    navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
+                    userPhoto = {this.state.tempData[d].info.photoUrl}
+                    navigation={navigation} otherUserProfile={'ProfileOtherUsers'}
+                    
+                    />
              })
    
   
 
         const usersList = Object.keys(this.state.filteredData).map((d, key) => {
             return  <UsersCard key={key} userName={this.state.filteredData[d].info.userName} userEmail={this.state.filteredData[d].info.email}
+            userPhoto = {this.state.filteredData[d].info.photoUrl}
              navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
      })
     
