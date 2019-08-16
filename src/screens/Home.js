@@ -66,6 +66,7 @@ export default class Home extends React.Component {
      
       this.updateUserData(user.providerData[0].uid, user.email, user.displayName,user.photoURL);
       this.setState({photo: user.photoURL, userEmail: user.email, userName:user.displayName})
+      alert(user.providerData[0].uid)
   }
   })
   }

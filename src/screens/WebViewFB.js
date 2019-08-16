@@ -26,7 +26,7 @@ render() {
     
     <WebView
     //html: '<iframe width="100%" height="50%" src="https://www.facebook.com/embed/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
-    source={{uri: 'https://www.facebook.com/'}}
+    source={{uri: 'https://www.facebook.com/102513651113996'}}
     style={{marginTop: 20}}
  />
     )

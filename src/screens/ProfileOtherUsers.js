@@ -118,6 +118,29 @@ shareLinkWithShareDialog() {
     );
   }
 
+  
+  // requestDialog (){
+  //   var tmp = this;
+  //   GameRequestDialog.canShow(this.state.gameRequestContent).then(
+  //     function(canShow) {
+  //       if (canShow) {
+  //         return GameRequestDialog.show(tmp.state.gameRequestContent);
+  //       }
+  //     }
+  //   ).then(
+  //     function(result) {
+  //       if (result.isCancelled) {
+  //         alert('Request cancelled');
+  //       } else {
+  //         alert('Request success with postId: ' + result.postId);
+  //       }
+  //     },
+  //     function(error) {
+  //       alert('Request fail with error: ' + error);
+  //     }
+  //   );
+  // }
+
 
 
 
@@ -196,7 +219,9 @@ render() {
                 
                 <CardItem>
                 <Right/>
-                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={this.shareLinkWithShareDialog.bind(this)}>
+                {//onPress={this.shareLinkWithShareDialog.bind(this)}>
+                }
+                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={()=> this.props.navigation.navigate("WebViewFB")}>
                     <Left/>
                     <Icon  style={{ marginLeft: 30, marginRight: 0,}} name='logo-facebook' />
                     <Right/>
