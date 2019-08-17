@@ -75,15 +75,15 @@ const MyApp = createAppContainer(createDrawerNavigator(
           ),
         },
       },
-      Home: {
-        screen:MyHomeStack,
-        navigationOptions: {
-          drawerLabel: 'Home',
-          drawerIcon: ({ tintColor }) => (
-            <Icon name="home" size={24} style={{ color: tintColor }} />
-          ),
-        },
-      },
+      // Home: {
+      //   screen:MyHomeStack,
+      //   navigationOptions: {
+      //     drawerLabel: 'Home',
+      //     drawerIcon: ({ tintColor }) => (
+      //       <Icon name="home" size={24} style={{ color: tintColor }} />
+      //     ),
+      //   },
+      // },
       
       
     },

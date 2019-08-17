@@ -96,28 +96,6 @@ shareLinkWithShareDialog() {
   }
 
 
-  messageDialogFunction (){
-    var tmp = this;
-    MessageDialog.canShow(this.state.messageDialog).then(
-      function(canShow) {
-        if (canShow) {
-          return MessageDialog.show(tmp.state.messageDialog);
-        }
-      }
-    ).then(
-      function(result) {
-        if (result.isCancelled) {
-          alert('Request cancelled');
-        } else {
-          alert('Request success with postId: ' + result.postId);
-        }
-      },
-      function(error) {
-        alert('Request fail with error: ' + error);
-      }
-    );
-  }
-
   
   // requestDialog (){
   //   var tmp = this;
@@ -193,7 +171,7 @@ render() {
                 <CardItem cardBody>
                     <Image source={{uri: 'https://cdn.pixabay.com/photo/2017/03/14/17/43/mountain-2143877_960_720.jpg'}} style={{height: 200, width: null, flex: 1}}/>
                     {/* 'https://cdn.pixabay.com/photo/2017/03/14/17/43/mountain-2143877_960_720.jpg' */}
-                     <Text style={{position:'absolute',color:'white',bottom:-40,left:155,right:0,top:150
+                     <Text style={{position:'absolute',color:'white',bottom:-40,left:158,right:0,top:150
                         ,fontSize:25,textShadowOffset:{width:1,height:2},textShadowColor:'black'
                         ,textShadowRadius:3}}>{this.state.userName}</Text>
                      <Thumbnail style={{
@@ -221,7 +199,7 @@ render() {
                 <Right/>
                 {//onPress={this.shareLinkWithShareDialog.bind(this)}>
                 }
-                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={()=> this.props.navigation.navigate("WebViewFB")}>
+                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={()=> this.props.navigation.navigate("WebViewFB", {fbuserId:this.state.fbuserId})}>
                     <Left/>
                     <Icon  style={{ marginLeft: 30, marginRight: 0,}} name='logo-facebook' />
                     <Right/>

@@ -24,7 +24,7 @@ render() {
                 {/* 'http://2ap93t1x1l6e2f6gfo3ag4vw.wpengine.netdna-cdn.com/wp-content/uploads/2017/03/harry-768x576.jpg' */}
                 <Body>
                   <Text>{this.props.userName}</Text>
-                  <Text note>{this.props.userEmail}</Text>
+                  <Text style={{fontSize: 10}}>{this.props.userEmail}</Text>
                 </Body>
               </Left>
                 

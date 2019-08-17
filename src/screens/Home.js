@@ -7,44 +7,38 @@ import ImagePicker from 'react-native-image-picker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { AccessToken, LoginManager ,GraphRequest,
   GraphRequestManager,} from 'react-native-fbsdk';
+import {Overlay,Input} from 'react-native-elements';
+
 
 
 
 
 export default class Home extends React.Component {
-  state = { userName:'User 101' , address: '124 NewBolston' ,contact:'+363467444',
-  email: '', password: '', errorMessage: null, photo: 'https://images.mentalfloss.com/sites/default/files/styles/insert_main_wide_image/public/5kh3kjh36.png', }
+  state = { userName:'User 101' , address: '124 NewBolston' ,contact:'+363467444', mounted: true,
+  email: '', password: '', errorMessage: null, photo: 'https://cdn2.iconfinder.com/data/icons/picons-essentials/71/user_add-512.png', 
+  isVisible:false , id:'', userAppId: ''
+}
 
 
 
 
 
 
-  facebookLogin = async()=> {
+  async facebookLogin() {
     try {
       const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
   
       if (result.isCancelled) {
         // handle this however suites the flow of your app
         throw new Error('User cancelled request'); 
+        // alert("Login Denied")
       }
   
       console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
   
       // get the access token
       const data = await AccessToken.getCurrentAccessToken() 
-      // .then(data => {
-      //   alert(data.accessToken.toString());
-    
-      //   const processRequest = new GraphRequest(
-      //     '/me?fields=id,first_name,last_name,name,picture.type(large),email,gender',
-      //     null,
-      //     this.get_Response_Info
-      //   );
-      //   // Start the graph request.
-      //   new GraphRequestManager().addRequest(processRequest).start();
-      // });;
-  
+   
       if (!data) {
         // handle this however suites the flow of your app
         throw new Error('Something went wrong obtaining the users access token');
@@ -57,115 +51,218 @@ export default class Home extends React.Component {
       // login with credential
       const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
   
-      console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
+      // console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
     } catch (e) {
       console.error(e);
     }
+    this.setState({isVisible:false})
     firebase.auth().onAuthStateChanged(user => {
     if(user) {
      
-      this.updateUserData(user.providerData[0].uid, user.email, user.displayName,user.photoURL);
-      this.setState({photo: user.photoURL, userEmail: user.email, userName:user.displayName})
-      alert(user.providerData[0].uid)
+      // this.updateUserData(user.providerData[0].uid, user.email, user.displayName,user.photoURL);
+      this.writeUserData(user.uid, this.state.email, this.state.firstName,this.state.lastName,this.state.photo);
+      // this.setState({ isVisible:true})
+     
   }
   })
   }
   
 
-
-
-  get_Response_Info = (error, result) => {
-    if (error) {
-      Alert.alert('Error fetching data: ' + error.toString());
-    } else {
-      //response alert
-      alert(JSON.stringify(result));      
-      this.setState({ fbtoken: result.id });
+   writeUserData(userId, email, firstName,lastName, photoUrl) {
+    firebase.database().ref('users/' + userId + '/').update({
+        fb: {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          photoUrl: photoUrl,
+          
+         
+        },
       
+    });
     }
-  
-  
-}
 
 
 
-
-
-
-
-  updateUserData(fbuserId,fbuserEmail,fbuserName,fbphototUrl){
-    firebase.database().ref('users/' + this.state.olduserId + '/' + 'info').update({
+  // updateUserData(fbuserId,fbuserEmail,fbuserName,fbphototUrl){
+  //   firebase.database().ref('users/' + this.state.olduserId + '/' + 'info').update({
       
         
-          userName: fbuserName,
-          email: fbuserEmail,
-          photoUrl: fbphototUrl,
-          fbuserId: fbuserId
-         
-     
-    
-     
-    
-  });
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  //         userName: fbuserName,
+  //         email: fbuserEmail,
+  //         photoUrl: fbphototUrl,
+  //         fbuserId: fbuserId 
+  // });
+  // }
 
 
 
 componentWillMount () {
 
   const { currentUser } = firebase.auth()
+
   var email = currentUser.email;
   var emailSplitted = email.substr(0, email.indexOf('@'));
   var emailSplittedCapt = emailSplitted.charAt(0).toUpperCase() + emailSplitted.slice(1)
+
+  
+
+  // alert("Component Will mount")
   
  
-    this.setState({ currentUser ,userName:emailSplittedCapt})
+    // this.setState({ currentUser ,Name:emailSplittedCapt})
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
-        this.writeUserData(user.uid, user.email, emailSplittedCapt,this.state.photo);
         // this.readUserData(user.uid);
-        this.setState({ userEmail:user.email, userName : emailSplittedCapt})
+        // this.setState({ userEmail:user.email, userName : emailSplittedCapt})
       }
     })
-    
+
+    this.getAndLoadHttpUrl(currentUser.uid)
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// readUserData(userId) {
+//   firebase.database().ref('users/' + userId + '/').once('value', function(snapshot) {
+//       let data = snapshot.val();
+//       // alert(JSON.stringify(data))
+//       if(data.info.firstName === undefined || data.info.firstName === null  ){
+//         let firstName = data.fb.firstName
+//         let lastName = data.fb.lastName
+//         let email = data.fb.email
+//         this.setState({firstName, lastName, email});
+//       }
+//       else{
+//         let firstName = data.info.firstName
+//         let lastName = data.info.lastName
+//         let email = data.info.email
+//         this.setState({firstName, lastName, email});
+//       }
+      
+      
+     
+//     }.bind(this));
+// }
+
+
+
+
+
+
+
+
+
 
 
 componentDidMount(){
   const { currentUser } = firebase.auth()
   this.setState({olduserId : currentUser.uid})
+  // this.getAndLoadHttpUrl(currentUser.uid)
+  firebase.database().ref(`/users/${currentUser.uid}`).child('fb').once('value').then(snapshot => { 
+    if (snapshot.val() !== null ) {
+      firebase.database().ref(`/users/${currentUser.uid}/info`)
+        .remove({ 
+          
+        })
+        firebase.database().ref('users/' + currentUser.uid + '/').once('value', function(snapshot) {
+          let data = snapshot.val();
+        
+         
+            let firstName = data.fb.firstName
+            let lastName = data.fb.lastName
+            let email = data.fb.email
+            let photo = data.fb.photoUrl
+            this.setState({firstName, lastName, email, photo});
+          
+          
+         
+        }.bind(this));
+    }
+    else{
+      firebase.database().ref('users/' + currentUser.uid + '/').once('value', function(snapshot) {
+        let data = snapshot.val();
+      
+       
+          let firstName = data.info.firstName
+          let lastName = data.info.lastName
+          let email = data.info.email
+          let photo = data.info.photoUrl
+          this.setState({firstName, lastName, email, photo});
+        
+       
+      }.bind(this));
+    }
+    // alert("Component Did mount")
+  })
+
 }
 
 
- writeUserData(userId, email, userName, photoUrl) {
-    firebase.database().ref('users/' + userId + '/').set({
-        info: {
-          userName: userName,
-          email: email,
-          photoUrl: photoUrl,
-          userId : userId,
-          fbuserId : '0'
-         
-        },
+
+
+async getAndLoadHttpUrl(userId) {
+  if (this.state.mounted == true) {
+    const ref = firebase.storage().ref(userId + '/to/image.jpg');
+    ref.getDownloadURL().then(data => {
+      if(data != null){
+
+        this.setState({ photo: data })
+        firebase.database().ref('users/' + userId + '/' + 'info').update({
+          photoUrl: data,
+          
+       });
+      }
+       
       
-    });
-    }
-    
+    }).catch(error => {
+      // alert('Please Select Your Profile Image')
+      
+   })
+  }
+ 
+}
+
+
+
+
+
+//  writeUserData(userId, email, userName, photoUrl) {
+//     firebase.database().ref('users/' + userId + '/').update({
+//         info: {
+//           userName: userName,
+//           email: email,
+//           photoUrl: photoUrl,
+//           userId : userId,
+//           fbuserId : '0'
+         
+//         },
+      
+//     });
+//     }
+
 
   
 
@@ -182,43 +279,110 @@ componentDidMount(){
 
 
 
-handleChoosePhoto = () => {
-  const options = {
-    noData: true,
-  };
-  ImagePicker.launchImageLibrary(options, response => {
+
+
+
+
+
+
+
+
+handleChoosePhoto = ()=>{
+  
+  ImagePicker.showImagePicker( response => {
     if (response.uri) {
-      this.setState({ photo: response.uri });
+      // User picked an image
+      const {uri} = response;
+      firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          const ref = firebase.storage().ref(user.uid + '/to/image.jpg');
+          ref.putFile(uri)
+      }
+      })
+      this.setState({photo : uri,})
     }
-
-  //   firebase.auth().onAuthStateChanged(user => {
-  //     firebase.database().ref('users/' + user.uid + '/').update({
-  //       info: {
-  //         userName: this.state.userName,
-  //         email : user.email,
-  //         photoUrl : response.uri,
-          
-  //       },
-  //   })
-
-  // });
-
-
- 
-  
-  
-});
-  
-};
-
-handleLogout = () => {
-  firebase
-    .auth()
-    .signOut()
-    .then(() => this.props.navigation.navigate('SignUp'))
-    .catch(error => this.setState({ errorMessage: error.message }))
-  LoginManager.logOut()
+})
 }
+
+cancelledOverlayForId = ()=>{
+  this.setState({isVisible:false})
+}
+
+
+
+uploadFbIdToFirebase = ()=>{
+  const { currentUser } = firebase.auth()
+
+  // firebase.database().ref("users/" + currentUser.uid + "/info/firstName").once("value", snapshot => {
+  //   if (!snapshot.exists()){
+  //   }
+  // });
+              firebase.auth().onAuthStateChanged(user => {
+                if(user) {
+                  firebase.database().ref('users/' + user.uid + '/info').update({    
+                    fbuserId : this.state.id
+              });
+              }
+          })
+  
+ 
+  this.setState({isVisible:false})
+  // alert("Id Added Successfully")
+  
+ 
+  return this.facebookLogin()
+}
+
+
+
+
+
+
+
+// handleChoosePhoto = () => {
+  // const options = {
+  //   noData: true,
+  // };
+  // ImagePicker.launchImageLibrary(options, response => {
+  //   if (response.uri) {
+  //     this.setState({ photo: response.uri });
+  //   }
+//}
+
+
+
+
+
+
+
+  componentWillUnmount() {
+    this.setState({ isMounted: false })
+}
+  
+  
+signOutUser = async () => {
+  try {
+      await firebase.auth().signOut()
+      .then(() => this.props.navigation.navigate('Loading'))
+     
+  } catch (e) {
+      console.log(e);
+  }
+}
+  
+
+
+// handleLogout = () => {
+//   LoginManager.logOut()
+//   firebase
+//     .auth()
+//     .signOut()
+//     .then(() => this.props.navigation.navigate('SignUp'))
+//     .catch(error => this.setState({ errorMessage: error.message }))
+
+//   this.setState({photo : 'https://cdn2.iconfinder.com/data/icons/picons-essentials/71/user_add-512.png'})
+  
+// }
   static navigationOptions = { header: null };
 render() {
     const { photo } = this.state;
@@ -240,7 +404,7 @@ render() {
             <Body>
                 <Title>Home</Title>
                <Subtitle> 
-              {currentUser && this.state.userEmail}!</Subtitle>
+              {this.state.email}!</Subtitle>
             </Body>
             <Right>
                 <Button badge transparent active 
@@ -261,26 +425,27 @@ render() {
                 <Left/>
                  <Left/>
                   <Left/>
-                  {photo && (
+                  
                
                <Button onPress={this.handleChoosePhoto} rounded
                     style={{margin:30, backgroundColor:'white'}}
                >
                  
                   <Thumbnail style={{marginTop:10}} large
-                    source={{uri: photo}} />
+                    source={{uri : this.state.photo}} />
                     {/* <Badge  style={{padding:0,  width:30,height:30, backgroundColor:'white',borderRadius:20, position: 'absolute', right:-2,bottom:-18}}>
                       <Icon style={{margin:0}} type="MaterialCommunityIcons" name='pencil-circle' />
                     </Badge> */}
                </Button>
-                  )}
+               
+                
    
                 </Right>
                
                 
                 
                 <CardItem>
-                    <Text>Name    :  {this.state.userName}</Text>
+                    <Text>Name    :  {this.state.firstName} {this.state.lastName}</Text>
                 </CardItem>
                 <CardItem/>
                 <CardItem>
@@ -292,14 +457,16 @@ render() {
                 </CardItem>
                 <CardItem/>
                 <CardItem>
-                    <Text>Email    :  {currentUser && this.state.userEmail}!</Text>
+                    <Text>Email    :  {this.state.email}!</Text>
                 </CardItem>
                 
 
-                <Button block style={{marginLeft:40,marginRight:40,margin:10}} onPress={this.facebookLogin}> 
+                <Button block style={{marginLeft:40,marginRight:40,margin:10}} onPress={()=> this.setState({isVisible:true})}> 
+                {/* this.facebookLogin */}
                     <Icon name='logo-facebook' />
                     <Text>Facebook</Text>
                 </Button>
+
                 
                  <Button block info style={{marginLeft:40,marginRight:40,margin:10}}>
                      <Icon name='logo-twitter' />
@@ -311,6 +478,9 @@ render() {
                 <Icon name='logo-instagram' danger />
                     <Text>Instagram</Text>
                 </Button>
+
+
+                
              
       
 
@@ -318,16 +488,54 @@ render() {
             
 
 
-        
+            
 
 
             
             <Button style={{backgroundColor:"#e93766"}} block onPress ={this.handleLogout} >
               <Text>Logout</Text>
             </Button>
+             
         
         </Content>
+           
+        {
+          this.state.isVisible == true && (
+            <Overlay
+            
+            isVisible={this.state.isVisible}
+            onBackdropPress={() => this.setState({ isVisible: false })}>
+              <View style={{justifyContent:'center',alignItems:'center',flexDirection:'column',margin:20}}>
+                <Text style={{marginTop:20,marginBottom:20}}>Please Enter your Facebook UserName</Text>
+                  <Input
+                    placeholder='jhon.doe.23'
+                    shake={true}
+                    onChangeText={id => this.setState({id})}
+                    value={this.state.id}
+                  />
+
+                  <Text style={{margin:10,marginTop:10}}>If you don't know your user name plz follow these steps.</Text>
+                  <Text style={{fontSize:12}}>1. Open facebook on your browser and login to your account.</Text>
+                  <Text style={{fontSize:12}}>2. Go to your Profile page and see the url after slash "/" on your browser search bar</Text>
+                  <Text style={{fontSize:12}}>3. Example: www.facebook.com/abc.qwe.21 so in this scenario  "abc.qwe.21" is your username.</Text>
+                <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'space-around',marginTop:30,margin:20}}> 
+                    <Button transparent style={{margin:20}} onPress={this.uploadFbIdToFirebase}><Text>Done</Text></Button>
+                    <Button transparent style={{margin:20}} onPress={this.cancelledOverlayForId}><Text>Cancel</Text></Button>
+                </View>
+               
+
+
+
+              </View>
+                
+               
+ 
+            </Overlay>
+          )
+        }
+       
         </Container>
+
     )
   }
 }
@@ -336,5 +544,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  progressBar: {
+    backgroundColor: 'rgb(3, 154, 229)',
+    height: 3,
+    shadowColor: '#000',
   }
 })

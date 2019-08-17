@@ -10,6 +10,7 @@ import { LoginButton, AccessToken ,GraphRequest,
 var config = {
     databaseURL: "https://friendrequest-a67aa.firebaseio.com/",
     projectId: "friendrequest-a67aa",
+    
 };
 
 
@@ -20,47 +21,69 @@ if (!firebase.apps.length) {
 export default class signUp extends Component {
   constructor(props){
     super(props);
-    this.state = { email: '', password: '', errorMessage: null, }
+    this.state = { email: '', password: '', errorMessage: null, firstName:'', lastName:''}
   }
   
-  handleSignUp () {
-    firebase
+  // handleSignUp () {
+  //   firebase
     
-      .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => this.props.navigation.navigate('Home'))
-      .catch(error => this.setState({ errorMessage: error.message }))
+  //     .auth()
+  //     .createUserWithEmailAndPassword(this.state.email, this.state.password)
+  //     .then(() => this.props.navigation.navigate('Home'))
+  //     .catch(error => this.setState({ errorMessage: error.message }))
          
+  // }
+
+  handleSignUp () {
+    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+        .then((res) => {
+            firebase.database().ref('users/' + res.user.uid + '/').set({
+              info: {
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                email : this.state.email,
+                photoUrl : ''
+
+                
+               
+              },
+               
+            })
+        })
+      .catch(error => this.setState({ errorMessage: error.message }))
+      this.props.navigation.navigate('Home')
+     
   }
 
+  
 
-  get_Response_Info = (error, result) => {
-    if (error) {
-      //Alert for the Error
-      Alert.alert('Error fetching data: ' + error.toString());
-    } else {
-      //response alert
-      alert(JSON.stringify(result));
-      this.setState({ fbuser_name: result.name });
-      this.setState({ fbtoken: result.id });
-      this.setState({ fbprofile_pic: result.picture.data.url });
-      this.setState({ fbemail: result.email });
+  // get_Response_Info = (error, result) => {
+  //   if (error) {
+  //     //Alert for the Error
+  //     Alert.alert('Error fetching data: ' + error.toString());
+  //   } else {
+  //     //response alert
+  //     alert(JSON.stringify(result));
+  //     this.setState({ fbuser_name: result.name });
+  //     this.setState({ fbtoken: result.id });
+  //     this.setState({ fbprofile_pic: result.picture.data.url });
+  //     this.setState({ fbemail: result.email });
       
 
-      //third_party_id
+  //     //third_party_id
       
 
-      // firebase.auth().onAuthStateChanged(user => {
-      //   if(user) {
-      //     this.writeUserFBData(this.state.fbuser_name,this.state.fbemail,this.state.fbuser_Name,this.state.fbprofile_pic);
+  //     // firebase.auth().onAuthStateChanged(user => {
+  //     //   if(user) {
+  //     //     this.writeUserFBData(this.state.fbuser_name,this.state.fbemail,this.state.fbuser_Name,this.state.fbprofile_pic);
           
           
-      //   }
-      // })
+  //     //   }
+  //     // })
 
-    }
-    this.props.navigation.navigate('Home')
-  }
+  //   }
+  //   this.props.navigation.navigate('Home')
+  // }
    
 
 
@@ -81,11 +104,27 @@ export default class signUp extends Component {
 render() {
     return (
       <View style={styles.container}>
-      <Text style={{color:'#e93766', fontSize: 40}}>Sign Up</Text>
+      <Text style={{color:'#e93766', fontSize: 40,margin:15}}>Sign Up</Text>
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
             {this.state.errorMessage}
           </Text>}
+
+          <TextInput
+          placeholder="First Name"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={firstName => this.setState({ firstName })}
+          value={this.state.firstName}
+        />
+
+        <TextInput
+          placeholder="Last Name"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={lastName => this.setState({ lastName })}
+          value={this.state.lastName}
+        />
         
         <TextInput
           placeholder="Email"
@@ -107,7 +146,7 @@ render() {
           <Button style={{backgroundColor:"#e93766",margin:30}} block onPress ={this.handleSignUp.bind(this,this.state.email)} >
               <Text style={{color:'white'}}>SignUp</Text>
           </Button>
-          <Button style={{marginLeft:40,marginRight:40,margin:10,backgroundColor:'#1752ad'}}>
+          {/* <Button style={{marginLeft:40,marginRight:40,margin:10,backgroundColor:'#1752ad'}}>
               <LoginButton 
               readPermissions={['public_profile']}
               onLoginFinished={(error, result) => {
@@ -132,7 +171,7 @@ render() {
               }}
               onLogoutFinished={this.onLogout}
             />
-          </Button>
+          </Button> */}
         
         <View>
         <Text> Already have an account? <Text onPress={() => this.props.navigation.navigate('Login')} style={{color:'#e93766', fontSize: 18}}> Login </Text></Text>

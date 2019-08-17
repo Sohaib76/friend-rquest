@@ -12,7 +12,7 @@ import { SearchBar } from 'react-native-elements';
 
 
 export default class SearchScreen extends React.Component {
-  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , filteredData: [], userName:'User '}
+  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , filteredData: [], firstName:'User '}
 
 
 
@@ -20,7 +20,7 @@ export default class SearchScreen extends React.Component {
      let text = search.toLowerCase();
      let usersInfo = this.state.tempData
      let filteredData = usersInfo.filter(item =>{
-         if(item.info.userName.toLowerCase().match(text)){
+         if(item.info.firstName.toLowerCase().match(text)){
              return item
          }
      } )
@@ -32,14 +32,14 @@ export default class SearchScreen extends React.Component {
   componentDidMount() {
 
         var olduserId = this.props.navigation.getParam('olduserId')
-       alert(olduserId)
+    //    alert(olduserId)
 
         const currentUserId = firebase.auth().currentUser.uid
         this.setState({currentUserId : currentUserId , olduserId: olduserId})
 
         firebase.auth().onAuthStateChanged(user => {
             if(user) {
-                this.readUserData(user.uid, user.email, this.state.userName);
+                this.readUserData(user.uid);
             }
         })
         
@@ -52,17 +52,25 @@ export default class SearchScreen extends React.Component {
    
 }
 
- readUserData(userId, email, userName) {
+ readUserData() {
     firebase.database().ref('users/').once('value', function(snapshot) {
         
         let data = snapshot.val();
-        
        
+
+        
+        
             for(let i in data) {
-              if(i != this.state.currentUserId && i != this.state.olduserId){
-                   this.state.tempData.push(data[i]);
-                }
-        }
+                
+                if(i != this.state.currentUserId && i!=this.state.olduserId) {
+                    if(data[i].info != null && data[i].fb == null){
+                        this.state.tempData.push(data[i]);
+                    }
+                     
+                  }
+          }
+       
+            
         this.setState({tempData: this.state.tempData,});
      
         
@@ -126,8 +134,8 @@ render() {
     
     
         const usersListAll = Object.keys(this.state.tempData).map((d, key) => {
-                    return <UsersCard key={key} userName={this.state.tempData[d].info.userName} userEmail={this.state.tempData[d].info.email}
-                    userPhoto = {this.state.tempData[d].info.photoUrl}  fbuserId={this.state.tempData[d].info.fbuserId}
+                    return <UsersCard key={key} userName={this.state.tempData[d].fb.firstName} userEmail={this.state.tempData[d].fb.email}
+                    userPhoto = {this.state.tempData[d].fb.photoUrl}  fbuserId={this.state.tempData[d].fb.fbuserId}
                     navigation={navigation} otherUserProfile={'ProfileOtherUsers'}
                     
                     />
@@ -136,8 +144,8 @@ render() {
   
 
         const usersList = Object.keys(this.state.filteredData).map((d, key) => {
-            return  <UsersCard key={key} userName={this.state.filteredData[d].info.userName} userEmail={this.state.filteredData[d].info.email}
-            userPhoto = {this.state.filteredData[d].info.photoUrl} fbuserId={this.state.filteredData[d].info.fbuserId}
+            return  <UsersCard key={key} userName={this.state.filteredData[d].fb.firstName} userEmail={this.state.filteredData[d].fb.email}
+            userPhoto = {this.state.filteredData[d].fb.photoUrl} fbuserId={this.state.filteredData[d].fb.fbuserId}
              navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
      })
     
