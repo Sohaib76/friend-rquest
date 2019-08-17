@@ -18,7 +18,7 @@ export default class WebViewFB extends React.Component {
 componentDidMount(){
   var fbuserId = this.props.navigation.getParam('fbuserId')
   this.setState({fbuserId: fbuserId})
-  alert('https://www.facebook.com/'+this.state.fbuserId)
+  // alert('https://www.facebook.com/'+this.state.fbuserId)
 }
 
 render() {

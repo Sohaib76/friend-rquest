@@ -6,12 +6,12 @@ export default {
     alignItems: 'center'
   },
   textInput: {
-    height: 40,
+    height: 45,
     fontSize:20,
     width: '90%',
     borderColor: '#9b9b9b',
     borderBottomWidth: 1,
-    marginTop: 8,
+    marginTop: 10,
     marginVertical: 15
   }
 }

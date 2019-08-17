@@ -33,8 +33,9 @@ export default class SearchScreen extends React.Component {
 
         var olduserId = this.props.navigation.getParam('olduserId')
     //    alert(olduserId)
-
+        
         const currentUserId = firebase.auth().currentUser.uid
+        
         this.setState({currentUserId : currentUserId , olduserId: olduserId})
 
         firebase.auth().onAuthStateChanged(user => {
@@ -53,21 +54,47 @@ export default class SearchScreen extends React.Component {
 }
 
  readUserData() {
+    const {currentUser} = firebase.auth()
+    // firebase.database().ref(`/users/${currentUser.uid}/fb`).child('email').once('value').then(snapshot => { 
+    //     let uemail = snapshot.val()
+   
+    // })
+    
     firebase.database().ref('users/').once('value', function(snapshot) {
         
         let data = snapshot.val();
+        
+        
        
-
+        
+        // alert(JSON.stringify(data[currentUser.uid].fb.email))
         
         
             for(let i in data) {
                 
-                if(i != this.state.currentUserId && i!=this.state.olduserId) {
-                    if(data[i].info != null && data[i].fb == null){
+                if(i != this.state.currentUserId && i!=this.state.olduserId ) {
+                    if(data[i].fb != undefined){
+                        if(data[i].info != null && data[i].fb == null){
+                      
+                            let myEmail = data[currentUser.uid].fb.email
+                            if (myEmail != data[i].info.email ) {
+                             
+                                this.state.tempData.push(data[i]);
+                            }
+                        
+                       
+                                                                        
+                        }
+                    }
+                    else{
                         this.state.tempData.push(data[i]);
                     }
-                     
-                  }
+
+                   
+                }
+          
+
+                
           }
        
             
@@ -134,8 +161,8 @@ render() {
     
     
         const usersListAll = Object.keys(this.state.tempData).map((d, key) => {
-                    return <UsersCard key={key} userName={this.state.tempData[d].fb.firstName} userEmail={this.state.tempData[d].fb.email}
-                    userPhoto = {this.state.tempData[d].fb.photoUrl}  fbuserId={this.state.tempData[d].fb.fbuserId}
+                    return <UsersCard key={key} userName={this.state.tempData[d].info.firstName} userEmail={this.state.tempData[d].info.email}
+                    userPhoto = {this.state.tempData[d].info.photoUrl}  fbuserId={this.state.tempData[d].info.fbuserId}
                     navigation={navigation} otherUserProfile={'ProfileOtherUsers'}
                     
                     />
@@ -144,8 +171,8 @@ render() {
   
 
         const usersList = Object.keys(this.state.filteredData).map((d, key) => {
-            return  <UsersCard key={key} userName={this.state.filteredData[d].fb.firstName} userEmail={this.state.filteredData[d].fb.email}
-            userPhoto = {this.state.filteredData[d].fb.photoUrl} fbuserId={this.state.filteredData[d].fb.fbuserId}
+            return  <UsersCard key={key} userName={this.state.filteredData[d].info.firstName} userEmail={this.state.filteredData[d].info.email}
+            userPhoto = {this.state.filteredData[d].info.photoUrl} fbuserId={this.state.filteredData[d].info.fbuserId}
              navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
      })
     

@@ -5,6 +5,7 @@ import Home from './src/screens/Home';
 import Loading from './src/screens/Loading'
 import Login from './src/screens/Login'
 import Main from './src/screens/Main'
+// import Logout from './src/components/Logout'
 
 
 
@@ -14,7 +15,8 @@ const AppNavigator = createStackNavigator(
     Loading,
     SignUp,
     Login,
-    Main
+	Main,
+	// Logout
 	},
 	{
 		initialRouteName: 'Loading'

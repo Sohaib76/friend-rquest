@@ -35,23 +35,29 @@ export default class signUp extends Component {
   // }
 
   handleSignUp () {
-    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then((res) => {
-            firebase.database().ref('users/' + res.user.uid + '/').set({
-              info: {
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                email : this.state.email,
-                photoUrl : ''
+    if(this.state.email === '' || this.state.password === '' || this.state.firstName === '', this.state.lastName === ''){
+      firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then((res) => {
+          firebase.database().ref('users/' + res.user.uid + '/').set({
+            info: {
+              firstName: this.state.firstName,
+              lastName: this.state.lastName,
+              email : this.state.email,
+              // photoUrl : ''
 
-                
-               
-              },
-               
-            })
-        })
-      .catch(error => this.setState({ errorMessage: error.message }))
-      this.props.navigation.navigate('Home')
+              
+             
+            },
+             
+          })
+      })
+    .catch(error => this.setState({ errorMessage: error.message }))
+    this.props.navigation.navigate('Home')
+    }
+    else{
+      alert("Please enter your details")
+    }
+    
      
   }
 

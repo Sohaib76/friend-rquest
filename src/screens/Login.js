@@ -7,11 +7,18 @@ import {Button} from 'native-base'
 export default class Login extends Component {
   state = { email: '', password: '', errorMessage: null }
  handleLogin = () => {
-   firebase
+  if(this.state.email === '' || this.state.password === ''){
+    firebase
      .auth()
      .signInWithEmailAndPassword(this.state.email, this.state.password)
      .then(() => this.props.navigation.navigate('Home'))
      .catch(error => this.setState({ errorMessage: error.message }))
+  }
+
+  else{
+    alert("Please enter your details")
+  }
+   
  }
 
   render() {

@@ -5,6 +5,7 @@ import Home from './Home.js'
 import {StatusBar,View} from 'react-native';
 import SearchScreen from './SearchScreen.js';
 import ProfileOtherUsers from './ProfileOtherUsers.js'
+// import Logout from '../components/Logout'
 import WebViewFB from './WebViewFB';
 
 export default class Main extends Component {
@@ -75,6 +76,15 @@ const MyApp = createAppContainer(createDrawerNavigator(
           ),
         },
       },
+      // Logout: {
+      //   screen:Logout,
+      //   navigationOptions: {
+      //     drawerLabel: 'Logout',
+      //     drawerIcon: ({ tintColor }) => (
+      //       <Icon name="search" size={24} style={{ color: tintColor }} />
+      //     ),
+      //   },
+      // },
       // Home: {
       //   screen:MyHomeStack,
       //   navigationOptions: {
@@ -90,6 +100,7 @@ const MyApp = createAppContainer(createDrawerNavigator(
 
     {
     //   contentComponent:CustomDrawerContentComponent,
+  hideStatusBar: true,
   drawerOpenRoute:'DrawerOpen',
   drawerCloseRoute:'DrawerClose',
   drawerToggleRoute:'DrawerToggle',
