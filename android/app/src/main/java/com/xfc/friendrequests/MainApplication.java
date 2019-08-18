@@ -3,6 +3,7 @@ package com.xfc.friendrequests;
 import android.support.multidex.MultiDexApplication;
 
 import com.facebook.react.ReactApplication;
+import com.swmansion.reanimated.ReanimatedPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -57,6 +58,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new ReanimatedPackage(),
             new FBSDKPackage(mCallbackManager),
             new ImagePickerPackage(),
             new VectorIconsPackage(),

@@ -36,6 +36,9 @@ export default class signUp extends Component {
 
   handleSignUp () {
     if(this.state.email === '' || this.state.password === '' || this.state.firstName === '', this.state.lastName === ''){
+      alert("Please enter your details")
+    }
+    else{
       firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then((res) => {
           firebase.database().ref('users/' + res.user.uid + '/').set({
@@ -53,9 +56,7 @@ export default class signUp extends Component {
       })
     .catch(error => this.setState({ errorMessage: error.message }))
     this.props.navigation.navigate('Home')
-    }
-    else{
-      alert("Please enter your details")
+     
     }
     
      

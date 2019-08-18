@@ -14,8 +14,9 @@ import {NavigationEvents} from 'react-navigation';
 
 
 export default class Home extends React.Component {
+
   state = { firstName:'User 101' , address: '124 NewBolston' ,contact:'+363467444', mounted: true,
-  email: 'loading@gmail.com', password: '', errorMessage: null, photo: 'https://cdn2.iconfinder.com/data/icons/picons-essentials/71/user_add-512.png', 
+  email: 'loading@gmail.com', password: '', errorMessage: null, photo: 'https://cdn1.iconfinder.com/data/icons/smashicons-interactions-flat-vol-6/59/360_-_Add_Profile_interaction_communication_interface-512.png', 
   isVisible:false , id:'', userAppId: ''
 }
 
@@ -104,9 +105,12 @@ componentWillMount () {
 
   const { currentUser } = firebase.auth()
 
-  var email = currentUser.email;
-  var emailSplitted = email.substr(0, email.indexOf('@'));
-  var emailSplittedCapt = emailSplitted.charAt(0).toUpperCase() + emailSplitted.slice(1)
+  // var email = currentUser.email;
+  // var emailSplitted = email.substr(0, email.indexOf('@'));
+  // var emailSplittedCapt = emailSplitted.charAt(0).toUpperCase() + emailSplitted.slice(1)
+
+
+  
 
   
 
@@ -122,6 +126,7 @@ componentWillMount () {
     // })
 
     this.getAndLoadHttpUrl(currentUser.uid)
+    
     
 }
 
@@ -181,6 +186,7 @@ componentWillMount () {
 
 
 componentDidMount(){
+  
   // const { currentUser } = firebase.auth()
   // this.setState({olduserId : currentUser.uid})
   // // this.getAndLoadHttpUrl(currentUser.uid)
@@ -339,6 +345,7 @@ uploadFbIdToFirebase = ()=>{
 
 
 updateDataRealTime = ()=>{
+  alert("Data updated")
   const { currentUser } = firebase.auth()
   this.setState({olduserId : currentUser.uid})
 
@@ -364,24 +371,21 @@ updateDataRealTime = ()=>{
         }.bind(this));
     }
     else{
+      // this.getAndLoadHttpUrl(currentUser.uid)
       firebase.database().ref(`/users/${currentUser.uid}/info`).child('photoUrl').once('value').then(snapshot => { 
         let imgUrl = snapshot.val()
-        if (imgUrl != null && imgUrl !== "" ) {
-          this.setState({photo: imgUrl})
-        }
-        else{
+        if (imgUrl === undefined || imgUrl === null || imgUrl === "" ) {
           firebase.database().ref('users/' + currentUser.uid + '/' + 'info').update({
-          
             
-                    
-                    photoUrl: this.state.photo,
+            photoUrl: this.state.photo,
                     
             });
-         }
-    
-          
-    
-          
+        
+        }
+        else{
+          // alert(imgUrl)
+          this.setState({photo: imgUrl})
+         }         
         
       })
 
@@ -393,14 +397,15 @@ updateDataRealTime = ()=>{
           let firstName = data.info.firstName
           let lastName = data.info.lastName
           let email = data.info.email
-          let photo = data.info.photoUrl
-          this.setState({firstName, lastName, email, photo});
+          // let photo = data.info.photoUrl
+          this.setState({firstName, lastName, email});
         
        
       }.bind(this));
     }
     // alert("Component Did mount")
   })
+
 
 }
 
@@ -471,7 +476,7 @@ render() {
     <Container >
       <NavigationEvents 
         onWillFocus={
-          this.updateDataRealTime
+          this.updateDataRealTime 
         }
       />
     
@@ -485,9 +490,9 @@ render() {
                     <Icon name="menu" />
                 </Button>
             </Left>
-            <Body>
+            <Body style={{flex:3,marginLeft:15}}>
                 <Title>Home</Title>
-               {/* <Subtitle>{this.state.email}</Subtitle> */}
+               <Subtitle >{this.state.email}</Subtitle>
             </Body>
             <Right>
                 <Button badge transparent active 
@@ -510,11 +515,12 @@ render() {
                   <Left/>
                   
                
-               <Button onPress={this.handleChoosePhoto} rounded
-                    style={{margin:30, backgroundColor:'white'}}
+               <Button onPress={this.handleChoosePhoto} rounded transparent
+                    style={{marginTop:10, margin:20, backgroundColor:'white',width:200 , height:100, justifyContent:'center',alignItems:'center'}}
                >
                  
-                  <Thumbnail style={{marginTop:10}} large
+                  <Thumbnail large 
+                  // scaleX={1.5} scaleY={1.5}
                     source={{uri : this.state.photo}} />
                     {/* <Badge  style={{padding:0,  width:30,height:30, backgroundColor:'white',borderRadius:20, position: 'absolute', right:-2,bottom:-18}}>
                       <Icon style={{margin:0}} type="MaterialCommunityIcons" name='pencil-circle' />

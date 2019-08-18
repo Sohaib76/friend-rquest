@@ -8,15 +8,16 @@ export default class Login extends Component {
   state = { email: '', password: '', errorMessage: null }
  handleLogin = () => {
   if(this.state.email === '' || this.state.password === ''){
-    firebase
-     .auth()
-     .signInWithEmailAndPassword(this.state.email, this.state.password)
-     .then(() => this.props.navigation.navigate('Home'))
-     .catch(error => this.setState({ errorMessage: error.message }))
+    alert("Please enter your details")
   }
 
   else{
-    alert("Please enter your details")
+    firebase
+    .auth()
+    .signInWithEmailAndPassword(this.state.email, this.state.password)
+    .then(() => this.props.navigation.navigate('Home'))
+    .catch(error => this.setState({ errorMessage: error.message }))
+    
   }
    
  }
