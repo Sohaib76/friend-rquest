@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet, Platform, Image, View } from 'react-native';
 import {Tabs,Tab,TabHeading, Segment,Thumbnail,Button,Text,Card,CardItem,Container, Badge, Header, Title, Content, Footer, FooterTab,  Left, Right, Body, Icon, } from 'native-base';
 import { ShareDialog ,GameRequestDialog,MessageDialog  } from 'react-native-fbsdk';
-
+import {Overlay,Input} from 'react-native-elements';
+import firebase from 'react-native-firebase';
 
 
 // Build up a shareable link.
@@ -43,7 +44,7 @@ export default class ProfileOtherUsers extends React.Component {
         
         this.state = { userName:'Herina Longbottom' , address: '124 NewBolston' ,contact:'+363467444',email:'pol2s@edc.com',
       
-      password: '', errorMessage: null , shareLinkContent: shareLinkContent, messageDialog:messageDialog
+      password: '', errorMessage: null , shareLinkContent: shareLinkContent, messageDialog:messageDialog , showIdPopup:true, id:''
       
         }
      
@@ -56,7 +57,9 @@ componentWillMount(){
     var user = this.props.navigation.getParam('username')
     var userPhoto = this.props.navigation.getParam('userPhoto')
     var fbuserId = this.props.navigation.getParam('fbuserId')
-    this.setState({userName: user , userPhoto: userPhoto , fbuserId: fbuserId})
+    var fbButtonDisable = this.props.navigation.getParam('fbButtonDisable')
+    var showIdPopup = this.props.navigation.getParam('showIdPopup')
+    this.setState({userName: user , userPhoto: userPhoto , fbuserId: fbuserId, fbButtonDisable:fbButtonDisable , showIdPopup:showIdPopup})
 }
 
 
@@ -118,6 +121,88 @@ shareLinkWithShareDialog() {
   //     }
   //   );
   // }
+
+
+
+
+
+
+
+  
+  cancelledOverlayForId = ()=>{
+    this.setState({isVisible:false})
+  }
+  
+  
+  
+  uploadFbIdToFirebase = ()=>{
+   
+  
+    // firebase.database().ref("users/" + currentUser.uid + "/info/firstName").once("value", snapshot => {
+    //   if (!snapshot.exists()){
+              if(this.state.id ===undefined || this.state.id=== null ||this.state.id === ''){
+                alert("Please enter your username")
+              }
+              else{
+                firebase.auth().onAuthStateChanged(user => {
+                  if(user) {
+                    firebase.database().ref('users/' + user.uid + '/info').update({    
+                      fbuserId : this.state.id,
+                      fbButtonDisable : false
+                });
+                }
+            })
+    
+   
+   
+              }
+
+              this.setState({isVisible:false})
+    //   }
+    // });
+               
+    // alert("Id Added Successfully")
+    
+   
+    
+  }
+  
+
+
+
+openFbProfile = ()=> {
+
+  if(this.state.showIdPopup == true){
+    this.setState({isVisible: true})
+    if(this.state.isVisible == false){
+          this.props.navigation.navigate("WebViewFB", {fbuserId:this.state.fbuserId})
+    }
+  
+  }
+  else{
+    this.props.navigation.navigate("WebViewFB", {fbuserId:this.state.fbuserId})
+  }
+ 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -197,21 +282,36 @@ render() {
                 
                 <CardItem>
                 <Right/>
-                {//onPress={this.shareLinkWithShareDialog.bind(this)}>
-                }
-                <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={()=> this.props.navigation.navigate("WebViewFB", {fbuserId:this.state.fbuserId})}>
-                    <Left/>
-                    <Icon  style={{ marginLeft: 20, marginRight: 10,}} name='logo-facebook' />
-                    <Right/>
+
+
+                {!this.state.fbButtonDisable ? ( 
+                <Button    style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={this.openFbProfile }>
+                              <Left/> 
+                              <Icon  style={{ marginLeft: 20, marginRight: 10,}} name='logo-facebook' /> 
+                              <Right/>
+                              <Badge style={{position:'absolute',bottom:-4,left:5,backgroundColor:'grey'}}>
+                            <Text>+</Text>
+                     </Badge>
+                      
+                      </Button>
+                      ) :( 
+                        <Button  disabled style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded >
+                            <Icon  style={{ marginLeft: 20, marginRight: 10,}} name='logo-facebook' />
+                            <Badge style={{position:'absolute',bottom:-4,left:5,backgroundColor:'grey'}}>
+                            <Text>+</Text>
+                            </Badge>
+             
+                      </Button>
+                      )
+                  
+                      }
+                  
+                   
                     {/* <Badge>
                         <Text>5</Text>
                     </Badge> */}
                    
-                    <Badge style={{position:'absolute',bottom:-4,left:5,backgroundColor:'grey'}}>
-                            <Text>+</Text>
-                     </Badge>
-                 
-                </Button>
+                   
                 <Right/>
 
                   <Button  info style={{width:70,height:70, alignItems:'center'}} rounded>
@@ -287,6 +387,67 @@ render() {
         </Tabs>
             
         </Content>
+
+
+
+
+        {
+          this.state.isVisible == true && (
+            <Overlay
+            
+            isVisible={this.state.isVisible}
+            onBackdropPress={() => this.setState({ isVisible: false })}>
+              <View style={{justifyContent:'center',alignItems:'center',flexDirection:'column',margin:20}}>
+                <Text style={{marginTop:20,marginBottom:20}}>Please enter your Facebook user name</Text>
+                  <Input
+                    placeholder='jhon.doe.23'
+                    shake={true}
+                    onChangeText={id => this.setState({id})}
+                    value={this.state.id}
+                  />
+
+                  <Text style={{margin:10,marginTop:10}}>To find your user name, please follow these steps.</Text>
+                  <Text style={{fontSize:12}}>1. Open facebook on your browser and login to your account.</Text>
+                  <Text style={{fontSize:12}}>2. Go to your profile page and see the url after the slash "/" on the search bar of your browser</Text>
+                  <Text style={{fontSize:12}}>3. Example: www.facebook.com/abc.qwe.21 so here "abc.qwe.21" is your username.</Text>
+                <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'space-around',marginTop:30,margin:20}}> 
+                    <Button transparent style={{margin:20}} onPress={this.uploadFbIdToFirebase}><Text>Done</Text></Button>
+                    <Button transparent style={{margin:20}} onPress={this.cancelledOverlayForId}><Text>Cancel</Text></Button>
+                </View>
+               
+
+
+
+              </View>
+                
+               
+ 
+            </Overlay>
+          )
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
          
          
         </Container>

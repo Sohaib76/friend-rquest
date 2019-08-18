@@ -17,7 +17,7 @@ render() {
 
     
   return (
-    <TouchableNativeFeedback onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers", {username:this.props.userName, userPhoto:this.props.userPhoto, fbuserId:this.props.fbuserId} )}}>
+    <TouchableNativeFeedback onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers", {showIdPopup:this.props.showIdPopup, username:this.props.userName, userPhoto:this.props.userPhoto, fbuserId:this.props.fbuserId , fbButtonDisable: this.props.fbButtonDisable} )}}>
           <Card>
               <CardItem bordered>
               <Left>
@@ -30,7 +30,7 @@ render() {
               </Left>
                 
                 <Right>
-                  <Button dark rounded onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers", {username:this.props.userName, userPhoto:this.props.userPhoto, fbuserId:this.props.fbuserId} )}}>
+                  <Button dark rounded onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers", {showIdPopup:this.props.showIdPopup,username:this.props.userName, userPhoto:this.props.userPhoto, fbuserId:this.props.fbuserId, fbButtonDisable: this.props.fbButtonDisable} )}}>
                     <Icon name='md-arrow-dropright' />
                   </Button>
                  

@@ -12,7 +12,8 @@ import { SearchBar } from 'react-native-elements';
 
 
 export default class SearchScreen extends React.Component {
-  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , filteredData: [], firstName:'User ', contactsFetched:false}
+  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , filteredData: [], firstName:'User ', contactsFetched:false , showIdPopup : false
+}
 
 
 
@@ -74,25 +75,46 @@ export default class SearchScreen extends React.Component {
         
         
             for(let i in data) {
+
                 
                 if(i != this.state.currentUserId && i!=this.state.olduserId ) {
                     if(data[i].fb != undefined){
                         if(data[i].info != null && data[i].fb == null){
+                            
                       
                             let myEmail = data[currentUser.uid].fb.email
                             if (myEmail != data[i].info.email ) {
-                             
+                                // this.state.tempData.push({fbButtonDisable : true})
+                                // var myObject = {"fbButtonDisable" : true}
+
                                 this.state.tempData.push(data[i]);
+                            //    this.state.tempData[i].map((d, key) => {
+                            //             this.state.tempData[d].push(myObject)
+                            //     })
+                                
+
                             }
                         
                        
                                                                         
                         }
+                        
+
+
                     }
                     else{
+                        // this.state.tempData.push({fbButtonDisable : false})
                         this.state.tempData.push(data[i]);
                     }
 
+                   
+                }
+
+                if(i == this.state.currentUserId){
+                    
+                        if(data[i].info.fbuserId == undefined || data[i].info.fbuserId == null){
+                                this.setState({showIdPopup : true})
+                        }
                    
                 }
           
@@ -126,6 +148,7 @@ closeActivityIndicator() {
 render() {
     const { currentUser } = firebase.auth()
     const navigation = this.props.navigation;
+    // alert(JSON.stringify(this.state.tempData))
 
     
 
@@ -175,7 +198,7 @@ render() {
         const usersListAll = Object.keys(this.state.tempData).map((d, key) => {
                     return <UsersCard key={key} userName={this.state.tempData[d].info.firstName} userEmail={this.state.tempData[d].info.email}
                     userPhoto = {this.state.tempData[d].info.photoUrl}  fbuserId={this.state.tempData[d].info.fbuserId}
-                    navigation={navigation} otherUserProfile={'ProfileOtherUsers'}
+                    navigation={navigation} otherUserProfile={'ProfileOtherUsers'} fbButtonDisable={this.state.tempData[d].info.fbButtonDisable} showIdPopup={this.state.showIdPopup}
                     
                     />
              })
@@ -184,17 +207,13 @@ render() {
 
         const usersList = Object.keys(this.state.filteredData).map((d, key) => {
             return  <UsersCard key={key} userName={this.state.filteredData[d].info.firstName} userEmail={this.state.filteredData[d].info.email}
-            userPhoto = {this.state.filteredData[d].info.photoUrl} fbuserId={this.state.filteredData[d].info.fbuserId}
-             navigation={navigation} otherUserProfile={'ProfileOtherUsers'}/>
+            userPhoto = {this.state.filteredData[d].info.photoUrl} fbuserId={this.state.filteredData[d].info.fbuserId} fbButtonDisable={this.state.filteredData[d].info.fbButtonDisable}
+             navigation={navigation} otherUserProfile={'ProfileOtherUsers'} showIdPopup={this.state.showIdPopup}/>
      })
     
     
 
     
-
-
-  
-
 
 
     FBfriendRequest = () => {
@@ -256,6 +275,16 @@ render() {
         
 
         </Content>
+
+
+
+
+
+
+
+  
+
+
     </Container>
     )
   }

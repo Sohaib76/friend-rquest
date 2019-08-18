@@ -334,7 +334,8 @@ uploadFbIdToFirebase = ()=>{
               firebase.auth().onAuthStateChanged(user => {
                 if(user) {
                   firebase.database().ref('users/' + user.uid + '/info').update({    
-                    fbuserId : this.state.id
+                    fbuserId : this.state.id,
+                    fbButtonDisable : false
               });
               }
           })
