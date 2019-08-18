@@ -104,6 +104,11 @@ export default class Home extends React.Component {
 componentWillMount () {
 
   const { currentUser } = firebase.auth()
+  var firstName = this.props.navigation.getParam('firstName')
+  var lastName = this.props.navigation.getParam('lastName')
+  var email = this.props.navigation.getParam('email')
+  var photo = this.props.navigation.getParam('photo')
+  this.setState({firstName,lastName,email,photo})
 
   // var email = currentUser.email;
   // var emailSplitted = email.substr(0, email.indexOf('@'));
