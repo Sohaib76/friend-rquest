@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity,StyleSheet, Platform, Image, View } from 'react-native';
 import {Thumbnail,Button,Text,Card,CardItem,Container, Badge, Header, Title, Content, Footer, FooterTab,  Left, Right, Body, Icon, } from 'native-base';
+import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 
 
 
@@ -16,7 +17,7 @@ render() {
 
     
   return (
-    // <TouchableOpacity onPress={()=>this.props.navigation.navigate(this.props.otherUserProfile)}>
+    <TouchableNativeFeedback onPress={()=>{this.props.navigation.navigate("ProfileOtherUsers", {username:this.props.userName, userPhoto:this.props.userPhoto, fbuserId:this.props.fbuserId} )}}>
           <Card>
               <CardItem bordered>
               <Left>
@@ -57,7 +58,7 @@ render() {
             </CardItem> */}
             
            </Card>
-          // </TouchableOpacity>
+          </TouchableNativeFeedback>
 
     )
   }

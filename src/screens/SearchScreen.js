@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Platform, Image, View } from 'react-native';
+import { StyleSheet, Platform, Image, View , ActivityIndicator } from 'react-native';
 import {Thumbnail,Button,Text,Card,CardItem,Container, Badge, Header, Title, Content, Footer, FooterTab,  Left, Right, Body, Icon, } from 'native-base';
 import firebase from 'react-native-firebase'
 import AntDesign from 'react-native-vector-icons';
@@ -12,7 +12,7 @@ import { SearchBar } from 'react-native-elements';
 
 
 export default class SearchScreen extends React.Component {
-  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , filteredData: [], firstName:'User '}
+  state = { email: '', password: '', errorMessage: null,search: '',  tempData: [] , filteredData: [], firstName:'User ', contactsFetched:false}
 
 
 
@@ -30,6 +30,7 @@ export default class SearchScreen extends React.Component {
   };
 
   componentDidMount() {
+        this.closeActivityIndicator();  
 
         var olduserId = this.props.navigation.getParam('olduserId')
     //    alert(olduserId)
@@ -44,6 +45,8 @@ export default class SearchScreen extends React.Component {
             }
         })
         
+
+       
 
         
         // x = this.state.tempData.filter(item => {
@@ -103,7 +106,16 @@ export default class SearchScreen extends React.Component {
         
             
     }.bind(this));
+    
+    
 }
+
+
+closeActivityIndicator() {
+    setTimeout(() => {
+     this.setState({contactsFetched: true});
+    }, 1000);
+  }
     
 
  
@@ -225,7 +237,19 @@ render() {
                 value={this.state.search}
             />
 
-           
+            {
+                (this.state.contactsFetched == false &&  
+                <ActivityIndicator
+                    animating={true}
+                    style={styles.indicator}
+                    size="large"
+                    />) 
+                    
+                   
+                
+                
+
+            }    
             
             {this.state.filteredData == 0 && usersListAll}
             {usersList}
@@ -236,3 +260,12 @@ render() {
     )
   }
 }
+
+const styles = StyleSheet.create({
+    indicator: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 80
+    }
+  });

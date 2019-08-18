@@ -7,6 +7,7 @@ import SearchScreen from './SearchScreen.js';
 import ProfileOtherUsers from './ProfileOtherUsers.js'
 // import Logout from '../components/Logout'
 import WebViewFB from './WebViewFB';
+import LoadingBeforeHome from './LoadingBeforeHome.js';
 
 export default class Main extends Component {
 
@@ -31,6 +32,9 @@ export default class Main extends Component {
 
   export const MyHomeStack = createStackNavigator(
     {
+      LoadingBeforeHome:{
+        screen: LoadingBeforeHome,
+      },
       Home: {
         screen:Home,
         navigationOptions: {
@@ -50,7 +54,7 @@ export default class Main extends Component {
     }, 
     
     {
-      initialRouteName: 'Home'
+      initialRouteName: 'LoadingBeforeHome'
     }
 )
       

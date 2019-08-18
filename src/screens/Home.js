@@ -344,8 +344,8 @@ uploadFbIdToFirebase = ()=>{
 
 
 
-updateDataRealTime = ()=>{
-  alert("Data updated")
+updateDataRealTime = async()=>{
+  // alert("Data updated")
   const { currentUser } = firebase.auth()
   this.setState({olduserId : currentUser.uid})
 
@@ -398,7 +398,7 @@ updateDataRealTime = ()=>{
           let lastName = data.info.lastName
           let email = data.info.email
           // let photo = data.info.photoUrl
-          this.setState({firstName, lastName, email});
+           this.setState({firstName, lastName, email});
         
        
       }.bind(this));
@@ -471,6 +471,15 @@ signOutUser = async () => {
 render() {
     const { photo } = this.state;
     const { currentUser } = this.state
+    // if (!this.state.dataFetched) {
+    //   return (
+    //     <ActivityIndicator
+    //       animating={true}
+    //       style={styles.indicator}
+    //       size="large"
+    //     />
+    //   );
+    // }
     
   return (
     <Container >

@@ -201,11 +201,11 @@ render() {
                 }
                 <Button style={{ width:70,height:70, alignItems:'center',justifyContent:'center'}} rounded onPress={()=> this.props.navigation.navigate("WebViewFB", {fbuserId:this.state.fbuserId})}>
                     <Left/>
-                    <Icon  style={{ marginLeft: 30, marginRight: 0,}} name='logo-facebook' />
+                    <Icon  style={{ marginLeft: 20, marginRight: 10,}} name='logo-facebook' />
                     <Right/>
-                    <Badge>
+                    {/* <Badge>
                         <Text>5</Text>
-                    </Badge>
+                    </Badge> */}
                    
                     <Badge style={{position:'absolute',bottom:-4,left:5,backgroundColor:'grey'}}>
                             <Text>+</Text>
@@ -217,9 +217,9 @@ render() {
                   <Button  info style={{width:70,height:70, alignItems:'center'}} rounded>
                     
                     <Icon style={{ marginLeft: 30, marginRight: 0,}} name='logo-twitter' />
-                    <Badge>
+                    {/* <Badge>
                         <Text>235</Text>
-                    </Badge>
+                    </Badge> */}
                    
                     <Badge style={{position:'absolute',bottom:-4,left:5,backgroundColor:'grey'}}>
                             <Text>+</Text>
@@ -230,9 +230,9 @@ render() {
                 <Button  rounded danger style={{width:70,height:70, alignItems:'center',}}>
                     
                     <Icon style={{ marginLeft: 30, marginRight: 0,}} name='logo-instagram' />
-                    <Badge>
+                    {/* <Badge>
                         <Text>50</Text>
-                    </Badge>
+                    </Badge> */}
                    
                     <Badge style={{position:'absolute',bottom:-4,left:5,backgroundColor:'grey'}}>
                             <Text>+</Text>
